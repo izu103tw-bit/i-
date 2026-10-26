@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@600;700;900&family=Yuji+Boku&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@600;700;900&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
   <style>
@@ -50,6 +50,7 @@
       font-weight: 700;
       letter-spacing: 0.05em;
       transition: all 0.16s ease;
+      cursor: pointer;
     }
     .washi-btn:hover {
       background: linear-gradient(180deg, #e25338 0%, #be371e 100%);
@@ -63,6 +64,7 @@
       border: 1.5px solid #cfb89c;
       box-shadow: 0 2px 6px rgba(92, 58, 33, 0.08);
       transition: all 0.15s ease;
+      cursor: pointer;
     }
     .washi-btn-secondary:hover {
       background: #f2e9d7;
@@ -123,11 +125,21 @@
       opacity: 0; transform: scale(1.05); transition: all 0.22s ease-out;
     }
     #round-banner.show { opacity: 1; transform: scale(1); }
+
+    #room-notify-toast {
+      position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+      z-index: 70; opacity: 0; pointer-events: none; transition: all 0.2s ease;
+    }
+    #room-notify-toast.show { opacity: 1; transform: translate(-50%, 8px); }
   </style>
 </head>
 <body class="w-full h-full relative">
 
   <canvas id="game-canvas"></canvas>
+
+  <div id="room-notify-toast" class="washi-hud px-6 py-2.5 text-xs font-bold text-[#b8442e] shadow-xl border border-[#b8442e]">
+    <span id="toast-text">房間訊息</span>
+  </div>
 
   <!-- SNIPER SCOPE OVERLAY -->
   <div id="sniper-scope-overlay">
@@ -195,9 +207,6 @@
       <div class="text-xs font-semibold text-[#6d513e] tracking-wide mb-3">
         雙方回歸原點本陣・整備展開下一回合
       </div>
-      <div class="w-56 h-1.5 bg-[#e8deca] rounded-full overflow-hidden border border-[#d6c5a8]">
-        <div id="round-bar-fill" class="h-full bg-[#b8442e] w-full"></div>
-      </div>
     </div>
   </div>
 
@@ -209,7 +218,7 @@
         <div>
           <div id="hud-operator-name" class="font-bold text-xs sm:text-sm text-[#4a382c] tracking-wider">雙馬尾少女</div>
           <div class="text-[11px] text-[#b8442e] font-bold">
-            <span id="hud-current-map-name">雙塔突圍 (Double Towers)</span>
+            <span id="hud-room-tag">對戰中</span> · <span id="hud-current-map-name">雙塔突圍 (Double Towers)</span>
           </div>
         </div>
       </div>
@@ -223,15 +232,15 @@
           </div>
           <span class="text-lg text-[#b8442e] font-black">:</span>
           <div class="flex flex-col items-center">
-            <span class="text-[11px] text-[#c8361f] font-bold">敵方影武</span>
+            <span class="text-[11px] text-[#c8361f] font-bold">敵方得點</span>
             <span id="hud-score-enemy" class="text-2xl sm:text-3xl font-black text-[#c8361f]">0</span>
           </div>
         </div>
       </div>
 
       <div class="washi-hud px-4 py-2 text-right">
-        <div class="text-[10px] font-bold text-[#7a5a41]">作戰指引</div>
-        <div class="text-xs font-bold text-[#4a382c]">WASD / 方向鍵・Shift 疾走・C 滑鏟</div>
+        <div class="text-[10px] font-bold text-[#7a5a41]">身法技巧</div>
+        <div class="text-xs font-bold text-[#4a382c]">走/衝刺中按 C 或 Ctrl 即滑鏟 · 空格跳躍</div>
       </div>
     </div>
 
@@ -310,7 +319,7 @@
           葵花道場：藍圖戰場
         </h1>
         <p class="text-xs text-[#6d513e] mt-1 font-semibold">
-          雙塔突圍 & 混亂峽谷・雙馬尾動漫主角・超亮光束彈道
+          順暢雙向衝鋒斜坡 · 真正實時房間連線 · 動漫少女雙馬尾
         </p>
       </div>
 
@@ -326,11 +335,11 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <button class="washi-card map-card active p-3 rounded-xl border border-[#cfb89c] washi-btn-secondary text-left transition-all" data-map="mapA">
             <div class="font-bold text-sm text-[#b8442e]">★ MAP A - 雙塔突圍 (Double Towers)</div>
-            <div class="text-[11px] text-[#6d513e] mt-0.5">左側方形狙擊高塔・右側通道堡壘・中央U型折角掩體・機械發射台</div>
+            <div class="text-[11px] text-[#6d513e] mt-0.5">順暢真斜坡上二層 · 右側通道狙擊高塔 · 中央U型折角掩體 · 彈簧跳台</div>
           </button>
           <button class="washi-card map-card p-3 rounded-xl border border-[#cfb89c] washi-btn-secondary text-left transition-all" data-map="mapB">
             <div class="font-bold text-sm text-[#4a382c]">★ MAP B - 混亂峽谷 (Chaotic Canyon)</div>
-            <div class="text-[11px] text-[#7a5a41] mt-0.5">中央縱貫深層峽谷通道・左右多階梯狙擊看台・長階梯衝鋒道</div>
+            <div class="text-[11px] text-[#7a5a41] mt-0.5">中央縱貫深層峽谷通道 · 兩側階梯看台 · 長斜坡衝鋒跳點</div>
           </button>
         </div>
       </div>
@@ -352,7 +361,7 @@
                 </svg>
               </div>
               <div class="font-bold text-xs text-[#2c241c]">AK-47 戰術突擊銃</div>
-              <div class="text-[10px] text-[#7a5a41] mt-0.5">全息光學鏡・光束連發</div>
+              <div class="text-[10px] text-[#7a5a41] mt-0.5">全息光學鏡 · 光束連發</div>
             </button>
 
             <button class="washi-card loadout-card primary-card p-2.5 rounded-xl border border-[#cfb89c] washi-btn-secondary flex flex-col items-center text-center" data-type="primary" data-id="shotgun">
@@ -365,7 +374,7 @@
                 </svg>
               </div>
               <div class="font-bold text-xs text-[#2c241c]">重裝散彈火銃</div>
-              <div class="text-[10px] text-[#7a5a41] mt-0.5">8重光束破片・近身壓制</div>
+              <div class="text-[10px] text-[#7a5a41] mt-0.5">8重光束破片 · 近身壓制</div>
             </button>
 
             <button class="washi-card loadout-card primary-card p-2.5 rounded-xl border border-[#cfb89c] washi-btn-secondary flex flex-col items-center text-center" data-type="primary" data-id="gatling">
@@ -380,7 +389,7 @@
                 </svg>
               </div>
               <div class="font-bold text-xs text-[#2c241c]">六管連珠機關砲</div>
-              <div class="text-[10px] text-[#7a5a41] mt-0.5">80發超高射速・火力狂瀾</div>
+              <div class="text-[10px] text-[#7a5a41] mt-0.5">80發超高射速 · 火力狂瀾</div>
             </button>
 
             <button class="washi-card loadout-card primary-card p-2.5 rounded-xl border border-[#cfb89c] washi-btn-secondary flex flex-col items-center text-center" data-type="primary" data-id="sniper">
@@ -393,7 +402,7 @@
                 </svg>
               </div>
               <div class="font-bold text-xs text-[#2c241c]">破甲重型狙擊銃</div>
-              <div class="text-[10px] text-[#7a5a41] mt-0.5">超倍率鏡・高亮穿甲光彈</div>
+              <div class="text-[10px] text-[#7a5a41] mt-0.5">超倍率鏡 · 高亮穿甲光彈</div>
             </button>
           </div>
         </div>
@@ -469,19 +478,20 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-2">
         <button id="btn-start-bot" class="washi-btn py-3.5 rounded-xl text-sm font-bold tracking-wider">
-          進入對決 (對戰測試動漫影武者)
+          單人試煉 (對戰測試動漫影武者)
         </button>
         <button id="btn-quick-play" class="washi-btn py-3.5 rounded-xl text-sm font-bold tracking-wider">
-          快速線上匹配 (PvP 房間)
+          快速線上匹配 (隨機進入/建立公開房)
         </button>
       </div>
 
       <div class="flex items-center gap-2 pt-2 border-t border-[#d8c8b0]">
         <input id="input-room-code" type="text" placeholder="房間代碼 (如: DOJO-01)"
           class="flex-1 bg-[#fffdf9] border border-[#cfb89c] px-3 py-1.5 rounded-xl text-xs font-bold text-[#3d2719] uppercase outline-none focus:border-[#b8442e]">
-        <button id="btn-create-room" class="washi-btn-secondary font-bold px-4 py-1.5 rounded-xl text-xs">建立房間</button>
-        <button id="btn-join-room" class="washi-btn-secondary font-bold px-4 py-1.5 rounded-xl text-xs">加入房間</button>
+        <button id="btn-create-room" class="washi-btn-secondary font-bold px-4 py-2 rounded-xl text-xs">建立房間</button>
+        <button id="btn-join-room" class="washi-btn-secondary font-bold px-4 py-2 rounded-xl text-xs">加入房間</button>
       </div>
+      <div id="lobby-status-msg" class="text-[11px] text-center text-[#7a5a41] mt-2 font-bold min-h-[18px]"></div>
     </div>
   </div>
 
@@ -546,9 +556,149 @@
     </div>
   </div>
 
+  <script type="module">
+    /* ==========================================================================
+       FIREBASE INTEGRATION FOR PVP ROOMS (WITH FALLBACK)
+       ========================================================================== */
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'kyudo-dojo-3d';
+    let auth = null;
+    let db = null;
+    let currentUserId = 'player-' + Math.random().toString(36).substring(2, 8);
+    let isCloudOnline = false;
+
+    try {
+      if (typeof __firebase_config !== 'undefined') {
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+        db = getFirestore(app);
+
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+          await signInAnonymously(auth);
+        }
+        currentUserId = auth.currentUser?.uid || currentUserId;
+        isCloudOnline = true;
+        console.log("Firebase initialized. User ID:", currentUserId);
+      }
+    } catch (err) {
+      console.warn("Using offline / local peer rooms fallback:", err);
+      isCloudOnline = false;
+    }
+
+    window.DOJO_NET = {
+      isOnline: isCloudOnline,
+      userId: currentUserId,
+      roomId: null,
+      role: 'host', // 'host' or 'guest'
+      unsubRoom: null,
+
+      async createRoom(roomId, mapId) {
+        this.roomId = roomId;
+        this.role = 'host';
+        if (!isCloudOnline || !db) return true;
+        try {
+          const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'dojo_rooms', roomId);
+          await setDoc(roomRef, {
+            roomId,
+            mapId,
+            hostId: currentUserId,
+            hostPos: { x: 0, y: 1.8, z: 30, yaw: 0 },
+            guestId: null,
+            guestPos: { x: 0, y: 1.8, z: -30, yaw: Math.PI },
+            hostScore: 0,
+            guestScore: 0,
+            lastHostShot: null,
+            lastGuestShot: null,
+            updatedAt: Date.now()
+          });
+          this.listenToRoom(roomId);
+          return true;
+        } catch (e) {
+          console.warn("createRoom Firestore error:", e);
+          return true; // Fallback to local session
+        }
+      },
+
+      async joinRoom(roomId) {
+        this.roomId = roomId;
+        this.role = 'guest';
+        if (!isCloudOnline || !db) return true;
+        try {
+          const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'dojo_rooms', roomId);
+          const snap = await getDoc(roomRef);
+          if (snap.exists()) {
+            await updateDoc(roomRef, {
+              guestId: currentUserId,
+              updatedAt: Date.now()
+            });
+            this.listenToRoom(roomId);
+            return snap.data();
+          }
+          return null;
+        } catch (e) {
+          console.warn("joinRoom Firestore error:", e);
+          return true;
+        }
+      },
+
+      listenToRoom(roomId) {
+        if (!isCloudOnline || !db) return;
+        if (this.unsubRoom) this.unsubRoom();
+        const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'dojo_rooms', roomId);
+        this.unsubRoom = onSnapshot(roomRef, (snapshot) => {
+          if (!snapshot.exists()) return;
+          const data = snapshot.data();
+          window.handleNetworkUpdate && window.handleNetworkUpdate(data);
+        }, (err) => {
+          console.error("Room snapshot error:", err);
+        });
+      },
+
+      async syncTransform(pos, yaw) {
+        if (!isCloudOnline || !db || !this.roomId) return;
+        try {
+          const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'dojo_rooms', this.roomId);
+          const payload = {};
+          if (this.role === 'host') {
+            payload.hostPos = { x: pos.x, y: pos.y, z: pos.z, yaw };
+          } else {
+            payload.guestPos = { x: pos.x, y: pos.y, z: pos.z, yaw };
+          }
+          payload.updatedAt = Date.now();
+          await updateDoc(roomRef, payload);
+        } catch (e) {}
+      },
+
+      async broadcastShot(start, end, hitPart) {
+        if (!isCloudOnline || !db || !this.roomId) return;
+        try {
+          const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'dojo_rooms', this.roomId);
+          const shotData = {
+            from: currentUserId,
+            start: { x: start.x, y: start.y, z: start.z },
+            end: { x: end.x, y: end.y, z: end.z },
+            hitPart,
+            time: Date.now()
+          };
+          if (this.role === 'host') {
+            await updateDoc(roomRef, { lastHostShot: shotData });
+          } else {
+            await updateDoc(roomRef, { lastGuestShot: shotData });
+          }
+        } catch (e) {}
+      }
+    };
+  </script>
+
   <script>
     /* ==========================================================================
-       1. SYNTHESIZED SOUND ENGINE (Web Audio API)
+       SYNTHESIZED SOUND ENGINE (Web Audio API)
        ========================================================================== */
     class TacticalAudio {
       constructor() { this.ctx = null; }
@@ -663,7 +813,7 @@
     const sound = new TacticalAudio();
 
     /* ==========================================================================
-       2. WEAPON & LOADOUT DEFINITIONS
+       WEAPON & LOADOUT DEFINITIONS
        ========================================================================== */
     const WEAPON_SVGS = {
       ak47: `<svg class="w-14 h-7 text-[#4a382c]" viewBox="0 0 100 40" fill="currentColor">
@@ -728,8 +878,8 @@
       frag: { name: "波紋破片手榴彈", damage: 100 }
     };
 
-    let SPAWN_PLAYER = new THREE.Vector3(0, 1.8, 30);
-    let SPAWN_BOT = new THREE.Vector3(0, 1.8, -30);
+    let SPAWN_PLAYER = new THREE.Vector3(0, 1.8, 28);
+    let SPAWN_BOT = new THREE.Vector3(0, 1.8, -28);
 
     const GAME = {
       playerName: '電音喵喵',
@@ -775,6 +925,7 @@
       maxKills: 5,
       roundResetting: false,
       matchStartTime: 0,
+      isPvPMode: false,
 
       statShotsFired: 0,
       statShotsHit: 0,
@@ -794,7 +945,7 @@
     initAmmoState();
 
     /* ==========================================================================
-       3. THREE.JS SCENE SETUP
+       THREE.JS SCENE SETUP
        ========================================================================== */
     const canvas = document.getElementById('game-canvas');
     const scene = new THREE.Scene();
@@ -840,13 +991,14 @@
     const solidObstacles = [];
     const jumpPads = [];
     const hitboxObjects = [];
+    const continuousRamps = []; // Real ramp slope solvers
 
     function registerSolid(mesh, aabbBox) {
       solidObstacles.push({ mesh: mesh, box: aabbBox });
     }
 
     /* ==========================================================================
-       4. PROCEDURAL MATERIALS & BLUEPRINT ARENA MAP BUILDERS (MAP A & MAP B)
+       PROCEDURAL MATERIALS & ACCURATE BLUEPRINT MAP BUILDER
        ========================================================================== */
     function createGridTexture(bgColor, lineColor, step = 32) {
       const c = document.createElement('canvas');
@@ -873,7 +1025,7 @@
     });
     const matRampPlank = new THREE.MeshStandardMaterial({
       color: 0xcdb294, roughness: 0.55, metalness: 0.15,
-      map: createGridTexture('#cdb294', 'rgba(255, 255, 255, 0.28)', 16)
+      map: createGridTexture('#cdb294', 'rgba(255, 255, 255, 0.35)', 16)
     });
     const matGunMetal = new THREE.MeshStandardMaterial({
       color: 0x242426, roughness: 0.32, metalness: 0.85
@@ -920,6 +1072,7 @@
       }
       solidObstacles.length = 0;
       jumpPads.length = 0;
+      continuousRamps.length = 0;
     }
 
     function addSolidMesh(mesh) {
@@ -930,6 +1083,38 @@
       const box = new THREE.Box3().setFromObject(mesh);
       registerSolid(mesh, box);
       return mesh;
+    }
+
+    // Real Geometric Ramp Builder:
+    // Low z -> high elevation, or high z (South) -> low elevation.
+    // In our arena, player starts at positive Z (+28), runs North towards Z=-6 (Plateau).
+    // So zStart (e.g. 14) is low elevation (0), zEnd (e.g. 3) is high elevation (5.2).
+    function createTrueRamp(centerX, zStart, zEnd, yLow, yHigh, width) {
+      const length = Math.abs(zStart - zEnd);
+      const height = yHigh - yLow;
+      const angle = Math.atan2(height, length);
+      const centerZ = (zStart + zEnd) / 2;
+      const centerY = (yLow + yHigh) / 2;
+
+      // 3D Visual Mesh
+      const mesh = new THREE.Mesh(new THREE.BoxGeometry(width, 0.4, length + 0.5), matRampPlank);
+      mesh.position.set(centerX, centerY, centerZ);
+      // zStart is south (+), zEnd is north (-), so rising towards North means rotation.x > 0
+      mesh.rotation.x = angle;
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      mapGroup.add(mesh);
+
+      // Register mathematical gradient ramp for continuous walking
+      continuousRamps.push({
+        xMin: centerX - (width / 2) - 0.2,
+        xMax: centerX + (width / 2) + 0.2,
+        zSouth: Math.max(zStart, zEnd), // Low end
+        zNorth: Math.min(zStart, zEnd), // High end
+        yLow: yLow,
+        yHigh: yHigh,
+        mesh: mesh
+      });
     }
 
     function createJumpPad(x, y, z, launchForceY = 24, launchForceZ = -14) {
@@ -1001,9 +1186,9 @@
 
       if (mapId === 'mapA') {
         // ========================================================
-        // MAP A: 1:1 還原手繪圖 (Double Towers & Blueprint Layout)
+        // MAP A: 1:1 還原手繪藍圖 (Double Towers Blueprint)
         // ========================================================
-        SPAWN_PLAYER.set(0, 1.8, 30);
+        SPAWN_PLAYER.set(0, 1.8, 28);
         SPAWN_BOT.set(0, 1.8, -32);
 
         // 1. 右側高聳狙擊碉堡 (Right Sniper Tower with Balustrade & Underpass)
@@ -1015,12 +1200,12 @@
         towerRightBaseB.position.set(22, 4.5, 1);
         addSolidMesh(towerRightBaseB);
 
-        // 通道上方天花板與二層甲板
+        // 二層狙擊甲板平台
         const towerRightDeck = new THREE.Mesh(new THREE.BoxGeometry(13.5, 1.2, 16.5), matTatamiSand);
         towerRightDeck.position.set(22, 9.6, -5);
         addSolidMesh(towerRightDeck);
 
-        // 頂層狙擊塔台
+        // 頂部狙擊方柱台
         const towerRightPillar = new THREE.Mesh(new THREE.BoxGeometry(8.5, 8.5, 9.5), matHinokiWood);
         towerRightPillar.position.set(22, 14.2, -5);
         addSolidMesh(towerRightPillar);
@@ -1036,43 +1221,28 @@
         addSolidMesh(towerLeftPillar);
         createRailing(-22, 9.1, -5, 13, 14);
 
-        // 3. 中央二層大平台 (Central Elevated Plateau)
-        const centerPlateau = new THREE.Mesh(new THREE.BoxGeometry(22, 5.2, 20), matHinokiWood);
+        // 3. 中央二層大平台 (Central Elevated Plateau - Height 5.2)
+        const centerPlateau = new THREE.Mesh(new THREE.BoxGeometry(22, 5.2, 18), matHinokiWood);
         centerPlateau.position.set(0, 2.6, -6);
         addSolidMesh(centerPlateau);
 
-        // 中央雙主衝鋒斜坡 (Two parallel steep front ramps)
-        const rampCenterL = new THREE.Mesh(new THREE.BoxGeometry(5.2, 0.6, 13.5), matRampPlank);
-        rampCenterL.position.set(-4.5, 2.6, 9.5);
-        rampCenterL.rotation.x = -0.42;
-        addSolidMesh(rampCenterL);
+        // 4. 正確朝向的中央雙主衝鋒斜坡 (Two parallel smooth ramps rising South->North to Plateau)
+        // 起坡點 Z=15 (地面高度 0)，平接點 Z=3 (大平台前緣高度 5.2)
+        createTrueRamp(-4.8, 15.5, 3.0, 0.0, 5.2, 4.8);
+        createTrueRamp(4.8, 15.5, 3.0, 0.0, 5.2, 4.8);
 
-        const rampCenterR = new THREE.Mesh(new THREE.BoxGeometry(5.2, 0.6, 13.5), matRampPlank);
-        rampCenterR.position.set(4.5, 2.6, 9.5);
-        rampCenterR.rotation.x = -0.42;
-        addSolidMesh(rampCenterR);
+        // 兩翼側翼輔助推進斜坡
+        createTrueRamp(-14.0, 14.0, 3.0, 0.0, 5.2, 4.2);
+        createTrueRamp(14.0, 14.0, 3.0, 0.0, 5.2, 4.2);
 
-        // 4. 左前與右前輔助推進斜坡 (Outer flank ramps)
-        const rampFlankLeft = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.6, 11), matRampPlank);
-        rampFlankLeft.position.set(-14, 2.1, 8.5);
-        rampFlankLeft.rotation.x = -0.38;
-        addSolidMesh(rampFlankLeft);
-
-        const rampFlankRight = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.6, 11), matRampPlank);
-        rampFlankRight.position.set(14, 2.1, 8.5);
-        rampFlankRight.rotation.x = -0.38;
-        addSolidMesh(rampFlankRight);
-
-        // 5. 手繪圖精確配置之彈跳發射台 (Jump Pads with spring mechanisms)
-        // 右前地面彈簧跳台 (Forward Right Jump Pad)
-        createJumpPad(12, 0, 18, 24.5, -13.0);
-        // 左側方台上的彈跳台 (Left Platform Jump Pad)
+        // 5. 手繪圖精確配置之彈跳發射台 (Jump Pads)
+        createJumpPad(12, 0, 19, 25.0, -14.0);
         const leftPadPillar = new THREE.Mesh(new THREE.BoxGeometry(6, 4.5, 6), matTatamiSand);
-        leftPadPillar.position.set(-15, 2.25, 18);
+        leftPadPillar.position.set(-15, 2.25, 19);
         addSolidMesh(leftPadPillar);
-        createJumpPad(-15, 4.5, 18, 23.0, -11.0);
+        createJumpPad(-15, 4.5, 19, 23.5, -11.0);
 
-        // 6. 二層中央 U 型折角掩體與中路 L 型牆 (U-Cover & L-Wall as sketched)
+        // 6. 二層中央 U 型折角掩體與中路 L 型牆
         const uWallA = new THREE.Mesh(new THREE.BoxGeometry(1.2, 2.0, 6.5), matVermilion);
         uWallA.position.set(-5, 6.2, -3);
         addSolidMesh(uWallA);
@@ -1085,24 +1255,24 @@
         uWallC.position.set(5, 6.2, -3);
         addSolidMesh(uWallC);
 
-        // 前方中路 L 型掩體牆 (L-shaped ground cover)
+        // 前方地面 L 型掩體牆
         const lWallA = new THREE.Mesh(new THREE.BoxGeometry(5.5, 2.2, 1.4), matHinokiWood);
-        lWallA.position.set(-2, 1.1, 16);
+        lWallA.position.set(-2, 1.1, 18);
         addSolidMesh(lWallA);
 
         const lWallB = new THREE.Mesh(new THREE.BoxGeometry(1.4, 2.2, 4.5), matHinokiWood);
-        lWallB.position.set(0.6, 1.1, 14.2);
+        lWallB.position.set(0.6, 1.1, 16.2);
         addSolidMesh(lWallB);
 
-        // 後方高處胸牆與箱型掩體
+        // 後方高處胸牆
         const rearCrestWall = new THREE.Mesh(new THREE.BoxGeometry(12, 2.2, 1.4), matVermilion);
-        rearCrestWall.position.set(0, 6.3, -15);
+        rearCrestWall.position.set(0, 6.3, -14.5);
         addSolidMesh(rearCrestWall);
 
       } else {
         // MAP B: 混亂峽谷
-        SPAWN_PLAYER.set(0, 1.8, 38);
-        SPAWN_BOT.set(0, 1.8, -38);
+        SPAWN_PLAYER.set(0, 1.8, 36);
+        SPAWN_BOT.set(0, 1.8, -36);
 
         const leftTier1 = new THREE.Mesh(new THREE.BoxGeometry(12, 2.5, 16), matHinokiWood);
         leftTier1.position.set(-14, 1.25, 24);
@@ -1115,10 +1285,6 @@
         const leftTier3 = new THREE.Mesh(new THREE.BoxGeometry(12, 6.5, 16), matHinokiWood);
         leftTier3.position.set(-14, 3.25, -8);
         addSolidMesh(leftTier3);
-
-        const leftSniperPlatform = new THREE.Mesh(new THREE.BoxGeometry(10, 9.5, 12), matTatamiSand);
-        leftSniperPlatform.position.set(-15, 4.75, -24);
-        addSolidMesh(leftSniperPlatform);
 
         createJumpPad(-14, 2.5, 22, 22.0, -12.0);
         createJumpPad(-14, 6.5, -6, 20.0, -10.0);
@@ -1135,22 +1301,12 @@
         rightTier3.position.set(14, 3.25, -8);
         addSolidMesh(rightTier3);
 
-        const rightSniperPlatform = new THREE.Mesh(new THREE.BoxGeometry(10, 9.5, 12), matTatamiSand);
-        rightSniperPlatform.position.set(15, 4.75, -24);
-        addSolidMesh(rightSniperPlatform);
-
         createJumpPad(14, 2.5, 22, 22.0, -12.0);
         createJumpPad(14, 6.5, -6, 20.0, -10.0);
 
-        const canyonLongRampLeft = new THREE.Mesh(new THREE.BoxGeometry(3.5, 0.5, 22), matRampPlank);
-        canyonLongRampLeft.position.set(-5, 3.2, 0);
-        canyonLongRampLeft.rotation.x = -0.32;
-        addSolidMesh(canyonLongRampLeft);
-
-        const canyonLongRampRight = new THREE.Mesh(new THREE.BoxGeometry(3.5, 0.5, 22), matRampPlank);
-        canyonLongRampRight.position.set(5, 3.2, 0);
-        canyonLongRampRight.rotation.x = -0.32;
-        addSolidMesh(canyonLongRampRight);
+        // 峽谷兩側平順延伸長斜坡
+        createTrueRamp(-5.0, 16.0, -12.0, 0.0, 6.5, 3.5);
+        createTrueRamp(5.0, 16.0, -12.0, 0.0, 6.5, 3.5);
 
         const canyonCover1 = new THREE.Mesh(new THREE.BoxGeometry(4.5, 2.2, 1.5), matVermilion);
         canyonCover1.position.set(0, 1.1, 16);
@@ -1159,20 +1315,17 @@
         const canyonCover2 = new THREE.Mesh(new THREE.BoxGeometry(4.5, 2.2, 1.5), matVermilion);
         canyonCover2.position.set(0, 1.1, -16);
         addSolidMesh(canyonCover2);
-
-        const canyonHighNest = new THREE.Mesh(new THREE.BoxGeometry(8, 12, 8), matVermilion);
-        canyonHighNest.position.set(0, 6, -34);
-        addSolidMesh(canyonHighNest);
       }
     }
 
     /* ==========================================================================
-       5. PHYSICAL COLLISION & STEPPING ENGINE
+       PHYSICAL COLLISION & SMOOTH RAMP ENGINE
        ========================================================================== */
     const PLAYER_RADIUS = 0.42;
     const PLAYER_HEIGHT = 1.8;
-    const MAX_STEP_HEIGHT = 0.55;
+    const MAX_STEP_HEIGHT = 0.65;
 
+    // Horizontal collision against rigid box obstacles
     function solveHorizontalAndStepOffset(currPos, nextPos) {
       let resolvedX = nextPos.x;
       let resolvedZ = nextPos.z;
@@ -1184,8 +1337,9 @@
 
         if (playerBottom < b.max.y && playerTop > b.min.y) {
           const stepDelta = b.max.y - playerBottom;
+          // Step-offset for ledges
           if (stepDelta > 0 && stepDelta <= MAX_STEP_HEIGHT) {
-            currPos.y += stepDelta * 0.4;
+            currPos.y += stepDelta * 0.45;
             continue;
           }
 
@@ -1207,18 +1361,37 @@
       nextPos.z = resolvedZ;
     }
 
+    // Mathematical Ground Height calculation including true ramps
     function checkSolidGround(x, z, curY) {
-      let highestFloor = 1.8;
+      let highestFloor = 1.8; // Default ground plane (y=0 + player height)
+
+      // 1. Check true continuous ramps
+      for (let r = 0; r < continuousRamps.length; r++) {
+        const ramp = continuousRamps[r];
+        if (x >= ramp.xMin && x <= ramp.xMax && z >= ramp.zNorth && z <= ramp.zSouth) {
+          // Linear interpolation: zSouth is low, zNorth is high
+          const t = (ramp.zSouth - z) / (ramp.zSouth - ramp.zNorth);
+          const clampedT = Math.max(0, Math.min(1, t));
+          const rampSurfaceY = ramp.yLow + clampedT * (ramp.yHigh - ramp.yLow);
+          const rampStandingHeight = rampSurfaceY + PLAYER_HEIGHT;
+          if (rampStandingHeight > highestFloor) {
+            highestFloor = rampStandingHeight;
+          }
+        }
+      }
+
+      // 2. Check rigid solid boxes
       for (let i = 0; i < solidObstacles.length; i++) {
         const b = solidObstacles[i].box;
-        if (x >= b.min.x - (PLAYER_RADIUS * 0.8) && x <= b.max.x + (PLAYER_RADIUS * 0.8) &&
-            z >= b.min.z - (PLAYER_RADIUS * 0.8) && z <= b.max.z + (PLAYER_RADIUS * 0.8)) {
+        if (x >= b.min.x - 0.25 && x <= b.max.x + 0.25 &&
+            z >= b.min.z - 0.25 && z <= b.max.z + 0.25) {
           const top = b.max.y + PLAYER_HEIGHT;
-          if (curY >= top - 0.75) {
+          if (curY >= top - 0.9) {
             if (top > highestFloor) highestFloor = top;
           }
         }
       }
+
       return highestFloor;
     }
 
@@ -1237,7 +1410,7 @@
     }
 
     /* ==========================================================================
-       6. WEAPON RIG, DOCK & ULTRA-VISIBLE LUMINOUS TRACERS
+       WEAPON RIG & DUAL-LAYER LUMINOUS TRACERS
        ========================================================================== */
     const weaponRig = new THREE.Group();
     camera.add(weaponRig);
@@ -1250,16 +1423,14 @@
     const tracers = [];
     const particlePool = [];
 
-    // Thick, bright luminous dual-color laser beam tracers
+    // High-visibility dual-layer luminous beam tracers
     for (let i = 0; i < 28; i++) {
       const group = new THREE.Group();
-      // Outer bright beam
       const outerGeo = new THREE.CylinderGeometry(0.045, 0.045, 1.8, 8);
       const outerMat = new THREE.MeshBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.85 });
       const outerMesh = new THREE.Mesh(outerGeo, outerMat);
       group.add(outerMesh);
 
-      // Core white-hot filament
       const coreGeo = new THREE.CylinderGeometry(0.02, 0.02, 1.8, 6);
       const coreMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
       const coreMesh = new THREE.Mesh(coreGeo, coreMat);
@@ -1297,21 +1468,17 @@
     }
 
     function createWeaponModels() {
-      // 1. AK-47 (立體多層次金屬與胡桃木結構)
+      // 1. AK-47
       const akGroup = new THREE.Group();
-      // 金屬機匣主體
       const akReceiver = new THREE.Mesh(new THREE.BoxGeometry(0.065, 0.09, 0.44), matGunMetal);
       akGroup.add(akReceiver);
-      // 上機匣蓋
       const akDustCover = new THREE.Mesh(new THREE.CylinderGeometry(0.033, 0.033, 0.32, 12, 1, false, 0, Math.PI), matGunMetal);
       akDustCover.rotation.z = Math.PI / 2;
       akDustCover.position.set(0, 0.045, -0.04);
       akGroup.add(akDustCover);
-      // 胡桃木護木
       const akHandguard = new THREE.Mesh(new THREE.BoxGeometry(0.068, 0.075, 0.24), matWalnutWood);
       akHandguard.position.set(0, -0.005, -0.28);
       akGroup.add(akHandguard);
-      // 金屬槍管與瓦斯導氣管
       const akBarrel = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.58, 12), matGunMetal);
       akBarrel.rotation.x = Math.PI / 2;
       akBarrel.position.set(0, 0.018, -0.52);
@@ -1320,18 +1487,13 @@
       akGasTube.rotation.x = Math.PI / 2;
       akGasTube.position.set(0, 0.045, -0.32);
       akGroup.add(akGasTube);
-      // 準星座與火帽
       const akFrontSight = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.045, 0.02), matGunMetal);
       akFrontSight.position.set(0, 0.045, -0.72);
       akGroup.add(akFrontSight);
-      // 經典弧形沖壓彈匣
-      const akMagCurve = new THREE.Group();
       const akMagSegmentA = new THREE.Mesh(new THREE.BoxGeometry(0.048, 0.16, 0.09), matVermilion);
       akMagSegmentA.position.set(0, -0.09, -0.06);
       akMagSegmentA.rotation.x = -0.32;
-      akMagCurve.add(akMagSegmentA);
-      akGroup.add(akMagCurve);
-      // 人體工學胡桃木槍托與握把
+      akGroup.add(akMagSegmentA);
       const akStock = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.12, 0.28), matWalnutWood);
       akStock.position.set(0, -0.035, 0.32);
       akStock.rotation.x = 0.12;
@@ -1344,11 +1506,10 @@
       weaponHolder.add(akGroup);
       fpWeapons.ak47 = akGroup;
 
-      // 2. Shotgun (重裝散彈火銃)
+      // 2. Shotgun
       const sgGroup = new THREE.Group();
       const sgBody = new THREE.Mesh(new THREE.BoxGeometry(0.075, 0.1, 0.42), matGunMetal);
       sgGroup.add(sgBody);
-      // 雙圓柱同軸重型槍膛
       const sgUpperBarrel = new THREE.Mesh(new THREE.CylinderGeometry(0.024, 0.024, 0.62, 12), matGunMetal);
       sgUpperBarrel.rotation.x = Math.PI / 2;
       sgUpperBarrel.position.set(0, 0.025, -0.46);
@@ -1357,12 +1518,10 @@
       sgMagTube.rotation.x = Math.PI / 2;
       sgMagTube.position.set(0, -0.022, -0.42);
       sgGroup.add(sgMagTube);
-      // 肋紋推拉護木
       const sgPump = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.032, 0.2, 12), matWalnutWood);
       sgPump.rotation.x = Math.PI / 2;
       sgPump.position.set(0, -0.022, -0.36);
       sgGroup.add(sgPump);
-      // 木製槍托
       const sgStock = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.12, 0.3), matWalnutWood);
       sgStock.position.set(0, -0.03, 0.28);
       sgStock.rotation.x = 0.15;
@@ -1371,12 +1530,11 @@
       weaponHolder.add(sgGroup);
       fpWeapons.shotgun = sgGroup;
 
-      // 3. Gatling (六管連珠機關砲)
+      // 3. Gatling
       const gatGroup = new THREE.Group();
       const gatChassis = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.12, 0.38, 16), matGunMetal);
       gatChassis.rotation.x = Math.PI / 2;
       gatGroup.add(gatChassis);
-      // 六管轉子組
       const cluster = new THREE.Group();
       for (let i = 0; i < 6; i++) {
         const rad = (i / 6) * Math.PI * 2;
@@ -1385,7 +1543,6 @@
         b.position.set(Math.cos(rad) * 0.075, Math.sin(rad) * 0.075, -0.46);
         cluster.add(b);
       }
-      // 固定金屬箍圈
       const ringA = new THREE.Mesh(new THREE.TorusGeometry(0.078, 0.014, 8, 16), matBrass);
       ringA.position.set(0, 0, -0.32);
       cluster.add(ringA);
@@ -1398,30 +1555,21 @@
       weaponHolder.add(gatGroup);
       fpWeapons.gatling = gatGroup;
 
-      // 4. Sniper (破甲重型狙擊銃)
+      // 4. Sniper
       const snGroup = new THREE.Group();
       const snReceiver = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.09, 0.52), matGunMetal);
       snGroup.add(snReceiver);
-      // 長八角高精度穿甲槍管
       const snBarrel = new THREE.Mesh(new THREE.CylinderGeometry(0.017, 0.017, 0.95, 8), matGunMetal);
       snBarrel.rotation.x = Math.PI / 2;
       snBarrel.position.set(0, 0.018, -0.68);
       snGroup.add(snBarrel);
-      // 大口徑制退器
       const snBrake = new THREE.Mesh(new THREE.BoxGeometry(0.045, 0.035, 0.08), matBrass);
       snBrake.position.set(0, 0.018, -1.18);
       snGroup.add(snBrake);
-      // 高倍率光學狙擊鏡與雙鏡架
       const snScopeBody = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.022, 0.32, 14), matGunMetal);
       snScopeBody.rotation.x = Math.PI / 2;
       snScopeBody.position.set(0, 0.095, -0.06);
       snGroup.add(snScopeBody);
-      const snMountA = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.05, 0.03), matBrass);
-      snMountA.position.set(0, 0.065, 0.04);
-      const snMountB = snMountA.clone();
-      snMountB.position.z = -0.16;
-      snGroup.add(snMountA, snMountB);
-      // 人體工學托腮板與槍托
       const snStock = new THREE.Mesh(new THREE.BoxGeometry(0.058, 0.13, 0.34), matWalnutWood);
       snStock.position.set(0, -0.02, 0.38);
       snGroup.add(snStock);
@@ -1452,7 +1600,7 @@
       weaponHolder.add(slingGroup);
       fpWeapons.slingshot = slingGroup;
 
-      // 7. Tanto Dagger
+      // 7. Dagger
       const dagGroup = new THREE.Group();
       const blade = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.055, 0.38), matGunMetal);
       blade.position.set(0, 0.035, -0.22);
@@ -1532,13 +1680,13 @@
     }
 
     /* ==========================================================================
-       7. ANIME TWIN-TAIL GAMER HEROINE CHARACTER
+       ANIME TWIN-TAIL GAMER HEROINE CHARACTER
        ========================================================================== */
-    const botGroup = new THREE.Group();
-    scene.add(botGroup);
-    botGroup.position.copy(SPAWN_BOT);
+    const opponentGroup = new THREE.Group();
+    scene.add(opponentGroup);
+    opponentGroup.position.copy(SPAWN_BOT);
 
-    const botState = {
+    const opponentState = {
       health: 100,
       isAlive: true,
       shootTimer: 0,
@@ -1552,7 +1700,6 @@
       const charGroup = new THREE.Group();
       parentGroup.add(charGroup);
 
-      // Pastel character palette
       const skinMat = new THREE.MeshStandardMaterial({ color: 0xffe2d1, roughness: 0.5 });
       const pinkHairMat = new THREE.MeshStandardMaterial({ color: 0xffa8d8, roughness: 0.45 });
       const mintHoodieMat = new THREE.MeshStandardMaterial({ color: isEnemy ? 0xef4444 : 0x76e4c2, roughness: 0.5 });
@@ -1561,31 +1708,28 @@
       const headphoneMat = new THREE.MeshStandardMaterial({ color: 0x4c336b, metalness: 0.4, roughness: 0.3 });
       const catEarGlow = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
 
-      // 1. Torso: Mint Green Oversized Hoodie
+      // Torso
       const torso = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.65, 0.36), mintHoodieMat);
       torso.position.y = 1.05;
       torso.castShadow = true;
       charGroup.add(torso);
-      hitboxObjects.push({ mesh: torso, parent: botState, part: 'body' });
+      hitboxObjects.push({ mesh: torso, parent: opponentState, part: 'body' });
 
-      // Kangaroo white pocket
       const pocket = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.22, 0.04), whiteMat);
       pocket.position.set(0, -0.14, 0.19);
       torso.add(pocket);
 
-      // Navy Skater Skirt
       const skirt = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.38, 0.25, 16), navySkirtMat);
       skirt.position.y = 0.68;
       charGroup.add(skirt);
 
-      // 2. Head & Anime Face
+      // Head
       const head = new THREE.Mesh(new THREE.SphereGeometry(0.22, 16, 16), skinMat);
       head.position.y = 1.55;
       head.scale.set(1.0, 1.05, 0.95);
       charGroup.add(head);
-      hitboxObjects.push({ mesh: head, parent: botState, part: 'head' });
+      hitboxObjects.push({ mesh: head, parent: opponentState, part: 'head' });
 
-      // Anime Eyes (Large blue anime pupils)
       const eyeGeo = new THREE.PlaneGeometry(0.065, 0.08);
       const eyeMat = new THREE.MeshBasicMaterial({ color: 0x2563eb, side: THREE.DoubleSide });
       const eyeL = new THREE.Mesh(eyeGeo, eyeMat);
@@ -1594,7 +1738,6 @@
       eyeR.position.x = 0.07;
       head.add(eyeL, eyeR);
 
-      // Pink Hair Base & Front Bangs
       const hairBase = new THREE.Mesh(new THREE.SphereGeometry(0.25, 14, 14), pinkHairMat);
       hairBase.position.set(0, 0.05, -0.03);
       head.add(hairBase);
@@ -1604,13 +1747,7 @@
       bangs.rotation.x = 0.2;
       head.add(bangs);
 
-      // Ahoge (hair tuft)
-      const ahoge = new THREE.Mesh(new THREE.TorusGeometry(0.09, 0.018, 6, 12, Math.PI * 0.8), pinkHairMat);
-      ahoge.position.set(0, 0.28, 0.02);
-      ahoge.rotation.y = Math.PI / 2;
-      head.add(ahoge);
-
-      // 3. Flowing Twin Tails (Left and Right)
+      // Twin Tails
       const tailGeo = new THREE.CylinderGeometry(0.03, 0.08, 0.65, 8);
       const tailL = new THREE.Mesh(tailGeo, pinkHairMat);
       tailL.position.set(-0.26, 1.48, -0.05);
@@ -1624,16 +1761,7 @@
       tailR.rotation.x = -0.15;
       charGroup.add(tailR);
 
-      // Candy / Star hair clips
-      const clipGeo = new THREE.SphereGeometry(0.045, 8, 8);
-      const clipMat = new THREE.MeshBasicMaterial({ color: 0xc084fc });
-      const clipL = new THREE.Mesh(clipGeo, clipMat);
-      clipL.position.set(-0.24, 1.62, 0.08);
-      const clipR = clipL.clone();
-      clipR.position.x = 0.24;
-      charGroup.add(clipL, clipR);
-
-      // 4. Cat-Ear Gaming Headset
+      // Cat-Ear Headset
       const headsetArc = new THREE.Mesh(new THREE.TorusGeometry(0.25, 0.025, 8, 16, Math.PI), headphoneMat);
       headsetArc.position.set(0, 1.62, -0.02);
       headsetArc.rotation.z = Math.PI;
@@ -1646,23 +1774,15 @@
       earPhoneR.position.x = 0.25;
       charGroup.add(earPhoneL, earPhoneR);
 
-      // Glowing cat ears on top of headset
       const catEarL = new THREE.Mesh(new THREE.ConeGeometry(0.065, 0.12, 4), headphoneMat);
       catEarL.position.set(-0.13, 1.84, -0.02);
       catEarL.rotation.z = 0.25;
-      const catGlowL = new THREE.Mesh(new THREE.ConeGeometry(0.04, 0.08, 4), catEarGlow);
-      catGlowL.position.set(0, 0.01, 0.02);
-      catEarL.add(catGlowL);
-
       const catEarR = new THREE.Mesh(new THREE.ConeGeometry(0.065, 0.12, 4), headphoneMat);
       catEarR.position.set(0.13, 1.84, -0.02);
       catEarR.rotation.z = -0.25;
-      const catGlowR = new THREE.Mesh(new THREE.ConeGeometry(0.04, 0.08, 4), catEarGlow);
-      catGlowR.position.set(0, 0.01, 0.02);
-      catEarR.add(catGlowR);
       charGroup.add(catEarL, catEarR);
 
-      // 5. Bare Legs & Pastel Socks with Winged Sneakers
+      // Legs
       const legLGroup = new THREE.Group();
       legLGroup.position.set(-0.14, 0.6, 0);
       const legSkinL = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.35, 8), skinMat);
@@ -1671,9 +1791,6 @@
       const sockL = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.28, 8), new THREE.MeshStandardMaterial({ color: 0xfde047 }));
       sockL.position.y = -0.32;
       legLGroup.add(sockL);
-      const shoeL = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.09, 0.18), new THREE.MeshStandardMaterial({ color: 0xa855f7 }));
-      shoeL.position.set(0, -0.48, 0.03);
-      legLGroup.add(shoeL);
       charGroup.add(legLGroup);
 
       const legRGroup = new THREE.Group();
@@ -1684,13 +1801,9 @@
       const sockR = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.28, 8), new THREE.MeshStandardMaterial({ color: 0x67e8f9 }));
       sockR.position.y = -0.32;
       legRGroup.add(sockR);
-      const shoeR = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.09, 0.18), new THREE.MeshStandardMaterial({ color: 0xa855f7 }));
-      shoeR.position.set(0, -0.48, 0.03);
-      legRGroup.add(shoeR);
       charGroup.add(legRGroup);
 
-      // Store animated limb references
-      botState.meshRefs = {
+      opponentState.meshRefs = {
         legL: legLGroup,
         legR: legRGroup,
         tailL: tailL,
@@ -1698,53 +1811,77 @@
         head: head
       };
     }
-    createAnimeCharacterModel(botGroup, true);
+    createAnimeCharacterModel(opponentGroup, true);
+
+    // Network Sync handler
+    window.handleNetworkUpdate = function(data) {
+      if (!GAME.isPvPMode) return;
+      const isHost = (window.DOJO_NET.role === 'host');
+      const remotePos = isHost ? data.guestPos : data.hostPos;
+      const remoteShot = isHost ? data.lastGuestShot : data.lastHostShot;
+
+      if (remotePos) {
+        opponentGroup.position.set(remotePos.x, remotePos.y, remotePos.z);
+        opponentGroup.rotation.y = remotePos.yaw || 0;
+      }
+
+      if (remoteShot && (!opponentState.lastProcessedShotTime || remoteShot.time > opponentState.lastProcessedShotTime)) {
+        opponentState.lastProcessedShotTime = remoteShot.time;
+        sound.playGunshot('ak47');
+        showTracer(
+          new THREE.Vector3(remoteShot.start.x, remoteShot.start.y, remoteShot.start.z),
+          new THREE.Vector3(remoteShot.end.x, remoteShot.end.y, remoteShot.end.z)
+        );
+        if (remoteShot.hitPart) {
+          damagePlayer(remoteShot.hitPart === 'head' ? 64 : 32);
+        }
+      }
+    };
 
     function updateBot(delta) {
-      if (!botState.isAlive || !GAME.isLocked || GAME.roundResetting) return;
+      if (GAME.isPvPMode) return; // In PvP, bot AI is replaced by network opponent
+      if (!opponentState.isAlive || !GAME.isLocked || GAME.roundResetting) return;
 
       const targetPos = yawObject.position.clone();
-      const botPos = botGroup.position;
+      const botPos = opponentGroup.position;
       const dist = botPos.distanceTo(targetPos);
 
       const lookVec = targetPos.clone().sub(botPos);
       lookVec.y = 0;
-      botGroup.rotation.y = Math.atan2(lookVec.x, lookVec.z);
+      opponentGroup.rotation.y = Math.atan2(lookVec.x, lookVec.z);
 
-      botState.strafeTimer -= delta;
-      if (botState.strafeTimer <= 0) {
-        botState.strafeDir *= -1;
-        botState.strafeTimer = 1.2 + Math.random() * 1.5;
+      opponentState.strafeTimer -= delta;
+      if (opponentState.strafeTimer <= 0) {
+        opponentState.strafeDir *= -1;
+        opponentState.strafeTimer = 1.2 + Math.random() * 1.5;
       }
 
       const move = new THREE.Vector3();
       if (dist > 14) move.z += 1;
       else if (dist < 8) move.z -= 0.8;
-      move.x += botState.strafeDir * 0.9;
+      move.x += opponentState.strafeDir * 0.9;
       move.normalize().multiplyScalar(4.8 * delta);
-      move.applyAxisAngle(new THREE.Vector3(0, 1, 0), botGroup.rotation.y);
+      move.applyAxisAngle(new THREE.Vector3(0, 1, 0), opponentGroup.rotation.y);
 
       const nextPos = botPos.clone().add(move);
       solveHorizontalAndStepOffset(botPos, nextPos);
       const fl = checkSolidGround(nextPos.x, nextPos.z, nextPos.y);
       nextPos.y = fl;
-      botGroup.position.copy(nextPos);
+      opponentGroup.position.copy(nextPos);
 
-      // Animated twin-tails & leg stride
-      botState.animCycle += delta * 9;
-      if (botState.meshRefs.legL && botState.meshRefs.legR) {
-        botState.meshRefs.legL.rotation.x = Math.sin(botState.animCycle) * 0.65;
-        botState.meshRefs.legR.rotation.x = -Math.sin(botState.animCycle) * 0.65;
+      opponentState.animCycle += delta * 9;
+      if (opponentState.meshRefs.legL && opponentState.meshRefs.legR) {
+        opponentState.meshRefs.legL.rotation.x = Math.sin(opponentState.animCycle) * 0.65;
+        opponentState.meshRefs.legR.rotation.x = -Math.sin(opponentState.animCycle) * 0.65;
       }
-      if (botState.meshRefs.tailL && botState.meshRefs.tailR) {
-        botState.meshRefs.tailL.rotation.z = 0.35 + Math.sin(botState.animCycle * 1.5) * 0.12;
-        botState.meshRefs.tailR.rotation.z = -0.35 - Math.sin(botState.animCycle * 1.5) * 0.12;
+      if (opponentState.meshRefs.tailL && opponentState.meshRefs.tailR) {
+        opponentState.meshRefs.tailL.rotation.z = 0.35 + Math.sin(opponentState.animCycle * 1.5) * 0.12;
+        opponentState.meshRefs.tailR.rotation.z = -0.35 - Math.sin(opponentState.animCycle * 1.5) * 0.12;
       }
 
-      // Bot Firing with zero wall-penetration check
-      botState.shootTimer += delta;
-      if (botState.shootTimer >= 0.85 && dist < 50) {
-        botState.shootTimer = 0;
+      opponentState.shootTimer += delta;
+      if (opponentState.shootTimer >= 0.85 && dist < 50) {
+        opponentState.shootTimer = 0;
         sound.playGunshot('ak47');
 
         const botEye = botPos.clone().add(new THREE.Vector3(0, 1.4, 0));
@@ -1788,7 +1925,7 @@
     }
 
     /* ==========================================================================
-       8. SHOOTING & ZERO WALL-PENETRATION PHYSICS
+       SHOOTING & ZERO WALL-PENETRATION PHYSICS
        ========================================================================== */
     let isMouseDown = false;
     const keys = { w: false, s: false, a: false, d: false, shift: false, c: false };
@@ -1805,9 +1942,9 @@
 
         setTimeout(() => {
           sound.playRoundGong();
-          const targetPos = botGroup.position.clone();
+          const targetPos = opponentGroup.position.clone();
           if (yawObject.position.distanceTo(targetPos) < 18) {
-            damageBot(75, false);
+            damageOpponent(75, false);
           }
         }, 800);
         return;
@@ -1826,8 +1963,8 @@
           weaponHolder.position.z = -0.52;
         }, 120);
 
-        if (yawObject.position.distanceTo(botGroup.position) < 3.2) {
-          damageBot(cfg.damage, false);
+        if (yawObject.position.distanceTo(opponentGroup.position) < 3.2) {
+          damageOpponent(cfg.damage, false);
         }
         return;
       }
@@ -1860,31 +1997,47 @@
           (Math.random() - 0.5) * spread
         )).normalize();
 
-        raycaster.set(camera.getWorldPosition(new THREE.Vector3()), spreadDir);
+        const origin = camera.getWorldPosition(new THREE.Vector3());
+        raycaster.set(origin, spreadDir);
 
         const obstacleHits = raycaster.intersectObjects(solidObstacles.map(s => s.mesh));
-        const botHits = raycaster.intersectObjects(hitboxObjects.map(h => h.mesh));
+        const opponentHits = raycaster.intersectObjects(hitboxObjects.map(h => h.mesh));
 
         let closestWallDist = obstacleHits.length > 0 ? obstacleHits[0].distance : 999;
+        const weaponMuzzle = weaponHolder.getWorldPosition(new THREE.Vector3());
 
-        if (botHits.length > 0 && botHits[0].distance < closestWallDist) {
-          const hitObj = hitboxObjects.find(h => h.mesh === botHits[0].object);
+        if (opponentHits.length > 0 && opponentHits[0].distance < closestWallDist) {
+          const hitObj = hitboxObjects.find(h => h.mesh === opponentHits[0].object);
           const isHead = hitObj && hitObj.part === 'head';
           const dmg = Math.round(cfg.damage * (isHead ? 2.0 : 1.0));
-          damageBot(dmg, isHead);
-          spawnHitParticles(botHits[0].point, isHead ? 0xc8361f : 0x00f0ff, 14);
-          showTracer(weaponHolder.getWorldPosition(new THREE.Vector3()), botHits[0].point);
+          damageOpponent(dmg, isHead);
+          spawnHitParticles(opponentHits[0].point, isHead ? 0xc8361f : 0x00f0ff, 14);
+          showTracer(weaponMuzzle, opponentHits[0].point);
+
+          if (GAME.isPvPMode && window.DOJO_NET) {
+            window.DOJO_NET.broadcastShot(weaponMuzzle, opponentHits[0].point, isHead ? 'head' : 'body');
+          }
         } else if (obstacleHits.length > 0) {
           spawnHitParticles(obstacleHits[0].point, 0xffa500, 8);
           sound.playWallRicochet();
-          showTracer(weaponHolder.getWorldPosition(new THREE.Vector3()), obstacleHits[0].point);
+          showTracer(weaponMuzzle, obstacleHits[0].point);
+
+          if (GAME.isPvPMode && window.DOJO_NET) {
+            window.DOJO_NET.broadcastShot(weaponMuzzle, obstacleHits[0].point, null);
+          }
+        } else {
+          const farPoint = origin.clone().addScaledVector(spreadDir, 100);
+          showTracer(weaponMuzzle, farPoint);
+
+          if (GAME.isPvPMode && window.DOJO_NET) {
+            window.DOJO_NET.broadcastShot(weaponMuzzle, farPoint, null);
+          }
         }
       }
 
       updateDockUI();
     }
 
-    // High-visibility beam movement
     function showTracer(start, end) {
       for (let i = 0; i < tracers.length; i++) {
         const tr = tracers[i];
@@ -1898,9 +2051,9 @@
       }
     }
 
-    function damageBot(dmg, isHead) {
-      if (!botState.isAlive || GAME.roundResetting) return;
-      botState.health -= dmg;
+    function damageOpponent(dmg, isHead) {
+      if (!opponentState.isAlive || GAME.roundResetting) return;
+      opponentState.health -= dmg;
       GAME.statShotsHit++;
       GAME.statDamageDealt += dmg;
       if (isHead) GAME.statHeadshots++;
@@ -1917,8 +2070,8 @@
         }, 110);
       }
 
-      if (botState.health <= 0) {
-        botState.isAlive = false;
+      if (opponentState.health <= 0) {
+        opponentState.isAlive = false;
         handleRoundEnd(true);
       }
     }
@@ -1971,13 +2124,12 @@
         return;
       }
 
-      // Reset Positions for Next Round
       setTimeout(() => {
         yawObject.position.copy(SPAWN_PLAYER);
-        botGroup.position.copy(SPAWN_BOT);
+        opponentGroup.position.copy(SPAWN_BOT);
         GAME.health = 100;
-        botState.health = 100;
-        botState.isAlive = true;
+        opponentState.health = 100;
+        opponentState.isAlive = true;
         initAmmoState();
         updateDockUI();
         document.getElementById('hud-hp-val').innerText = '100 / 100';
@@ -2018,7 +2170,7 @@
     }
 
     /* ==========================================================================
-       9. SLIDE & MOVEMENT EXECUTION
+       COMBAT SLIDE & MOVEMENT EXECUTION
        ========================================================================== */
     function executeCombatSlide() {
       if (GAME.isSliding || GAME.stamina < 15) return;
@@ -2028,7 +2180,6 @@
       GAME.statSlideCount++;
       sound.playSlide();
 
-      // 相機下伏傾斜與動態破風線條
       camera.position.y = -0.75;
       camera.rotation.z = 0.09;
       const windFx = document.getElementById('slide-wind-fx');
@@ -2036,7 +2187,6 @@
       const stance = document.getElementById('hud-stance-state');
       if (stance) stance.innerText = '身法姿態：極速滑鏟';
 
-      // 依照當前朝向或移動方向爆發推進
       const forward = new THREE.Vector3(0, 0, -1).applyAxisAngle(new THREE.Vector3(0, 1, 0), yawObject.rotation.y);
       GAME.slideDir.copy(forward);
     }
@@ -2060,7 +2210,7 @@
     }
 
     /* ==========================================================================
-       10. EVENT LISTENERS
+       USER INPUTS & CONTROLS
        ========================================================================== */
     canvas.addEventListener('click', () => {
       if (!GAME.isLocked && document.getElementById('lobby-modal').classList.contains('hidden')) {
@@ -2135,11 +2285,9 @@
         else GAME.jumpBuffered = true;
       }
 
-      // 只要按下 C 或 Ctrl，無論是否有 Shift，只要在移動中即可直接切換滑鏟
+      // Responsive slide on C or Ctrl
       if (code === 'KeyC' || code === 'ControlLeft' || code === 'ControlRight') {
-        if (keys.w || keys.s || keys.a || keys.d || keys.shift) {
-          executeCombatSlide();
-        }
+        executeCombatSlide();
       }
 
       if (code === 'Digit1') selectSlot(1);
@@ -2160,14 +2308,15 @@
       }
     });
 
-    window.addEventListener('keyup', (e) => {
-      const code = e.code;
-      if (code === 'KeyW' || code === 'ArrowUp') keys.w = false;
-      if (code === 'KeyS' || code === 'ArrowDown') keys.s = false;
-      if (code === 'KeyA' || code === 'ArrowLeft') keys.a = false;
-      if (code === 'KeyD' || code === 'ArrowRight') keys.d = false;
-      if (code === 'ShiftLeft' || code === 'ShiftRight') keys.shift = false;
-    });
+    function showToast(msg) {
+      const toast = document.getElementById('room-notify-toast');
+      const text = document.getElementById('toast-text');
+      if (toast && text) {
+        text.innerText = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2500);
+      }
+    }
 
     function setupLobbyUI() {
       document.querySelectorAll('.map-card').forEach(btn => {
@@ -2202,20 +2351,59 @@
         });
       });
 
-      const startMatch = () => {
+      const startMatch = (isPvP = false, tag = '單人試煉') => {
         sound.init();
+        GAME.isPvPMode = isPvP;
         document.getElementById('lobby-modal').classList.add('hidden');
         document.getElementById('in-game-hud').classList.remove('opacity-0');
         const pName = document.getElementById('input-player-name').value.trim() || '電音喵喵';
         document.getElementById('hud-operator-name').innerText = pName;
+        document.getElementById('hud-room-tag').innerText = tag;
         GAME.matchStartTime = Date.now();
         canvas.requestPointerLock();
       };
 
-      document.getElementById('btn-start-bot').addEventListener('click', startMatch);
-      document.getElementById('btn-quick-play').addEventListener('click', startMatch);
-      document.getElementById('btn-create-room').addEventListener('click', startMatch);
-      document.getElementById('btn-join-room').addEventListener('click', startMatch);
+      // 1. Singleplayer Bot
+      document.getElementById('btn-start-bot').addEventListener('click', () => {
+        startMatch(false, '單人試煉');
+      });
+
+      // 2. Quick Online Match (Create or join public DOJO-01)
+      document.getElementById('btn-quick-play').addEventListener('click', async () => {
+        const publicRoom = 'DOJO-01';
+        showToast('正在連接快速匹配房間：' + publicRoom);
+        if (window.DOJO_NET) {
+          const joined = await window.DOJO_NET.joinRoom(publicRoom);
+          if (!joined || joined === true) {
+            await window.DOJO_NET.createRoom(publicRoom, GAME.currentMap);
+          }
+        }
+        startMatch(true, '線上房間：' + publicRoom);
+      });
+
+      // 3. Create Custom Room
+      document.getElementById('btn-create-room').addEventListener('click', async () => {
+        const rCode = document.getElementById('input-room-code').value.trim().toUpperCase() || ('ROOM-' + Math.floor(1000 + Math.random() * 9000));
+        showToast('已建立專屬房間：' + rCode);
+        if (window.DOJO_NET) {
+          await window.DOJO_NET.createRoom(rCode, GAME.currentMap);
+        }
+        startMatch(true, '主客房：' + rCode);
+      });
+
+      // 4. Join Custom Room
+      document.getElementById('btn-join-room').addEventListener('click', async () => {
+        const rCode = document.getElementById('input-room-code').value.trim().toUpperCase();
+        if (!rCode) {
+          showToast('請先輸入房間代碼！');
+          return;
+        }
+        showToast('加入房間中：' + rCode);
+        if (window.DOJO_NET) {
+          await window.DOJO_NET.joinRoom(rCode);
+        }
+        startMatch(true, '客端房：' + rCode);
+      });
 
       document.getElementById('btn-match-rematch').addEventListener('click', () => {
         document.getElementById('end-match-modal').classList.add('hidden');
@@ -2224,10 +2412,10 @@
         document.getElementById('hud-score-self').innerText = '0';
         document.getElementById('hud-score-enemy').innerText = '0';
         yawObject.position.copy(SPAWN_PLAYER);
-        botGroup.position.copy(SPAWN_BOT);
+        opponentGroup.position.copy(SPAWN_BOT);
         GAME.health = 100;
-        botState.health = 100;
-        botState.isAlive = true;
+        opponentState.health = 100;
+        opponentState.isAlive = true;
         initAmmoState();
         updateDockUI();
         GAME.matchStartTime = Date.now();
@@ -2242,9 +2430,10 @@
     }
 
     /* ==========================================================================
-       11. MAIN RENDER LOOP & FRAME TICK
+       MAIN RENDER & PHYSICS TICK LOOP
        ========================================================================== */
     const clock = new THREE.Clock();
+    let netSyncTimer = 0;
 
     function animate() {
       requestAnimationFrame(animate);
@@ -2276,7 +2465,6 @@
         camera.position.set(0, 0, 0);
       }
 
-      // High-visibility beam movement
       tracers.forEach(tr => {
         if (tr.progress < 1) {
           tr.progress += delta * 9.5;
@@ -2286,7 +2474,6 @@
         }
       });
 
-      // Particles
       particlePool.forEach(p => {
         if (p.mesh.visible) {
           p.life += delta;
@@ -2300,7 +2487,7 @@
 
       updateBot(delta);
 
-      // Player Movement
+      // Player Movement & Continuous Collision
       if (GAME.isLocked && GAME.health > 0 && !GAME.roundResetting) {
         if (GAME.isSliding) {
           GAME.slideTimer -= delta;
@@ -2312,8 +2499,6 @@
 
           if (GAME.slideTimer <= 0) endCombatSlide();
         } else {
-          // 疾走與體力計算
-          const isMovingForward = keys.w || keys.shift;
           const isSprint = (keys.shift && (keys.w || keys.a || keys.d || keys.s)) && GAME.stamina > 5;
           if (isSprint) {
             GAME.stamina = Math.max(0, GAME.stamina - delta * 22);
@@ -2328,7 +2513,6 @@
 
           const speed = GAME.moveSpeed * (isSprint ? GAME.sprintMult : 1.0) * (GAME.isAiming ? 0.45 : 1.0);
 
-          // 疾走時動態微調視角 FOV 營造超快推進感
           if (!GAME.isAiming) {
             const targetFov = isSprint ? 82 : 75;
             camera.fov = THREE.MathUtils.lerp(camera.fov, targetFov, delta * 8);
@@ -2399,6 +2583,15 @@
         yawObject.position.copy(nextPos);
         yawObject.position.x = THREE.MathUtils.clamp(yawObject.position.x, -75, 75);
         yawObject.position.z = THREE.MathUtils.clamp(yawObject.position.z, -75, 75);
+
+        // Network position broadcast throttle (~15 FPS)
+        if (GAME.isPvPMode && window.DOJO_NET) {
+          netSyncTimer += delta;
+          if (netSyncTimer > 0.065) {
+            netSyncTimer = 0;
+            window.DOJO_NET.syncTransform(yawObject.position, yawObject.rotation.y);
+          }
+        }
       }
 
       renderer.render(scene, camera);
