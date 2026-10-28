@@ -1815,3 +1815,26 @@ requestAnimationFrame(gameLoop);
 </script>
 </body>
 </html>
+function renderScene() {
+  ctx.save();
+
+  // 【關鍵修正 1】：在進行鏡頭位移前，先清空整張畫布！
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // 【關鍵修正 2】：填上乾淨的簡約米白色和紙底色
+  ctx.fillStyle = '#FAF7F2';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // 螢幕震動
+  let sx = 0, sy = 0;
+  if (screenShake > 0) {
+    sx = (Math.random() - 0.5) * screenShake;
+    sy = (Math.random() - 0.5) * screenShake;
+    screenShake *= 0.88;
+    if (screenShake < 0.5) screenShake = 0;
+  }
+  ctx.translate(-camera.x + sx, -camera.y + sy);
+
+  drawBackgroundMap(ctx);
+  updateDestructibles(ctx);
+  // ...其餘維持不變
