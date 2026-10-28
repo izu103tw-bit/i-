@@ -17,7 +17,7 @@
   }
   canvas { display: block; width: 100%; height: 100%; }
 
-  /* 頂部 HUD */
+  /* 頂部 HUD 資訊 */
   #top-hud {
     position: absolute; top: 12px; left: 0; width: 100%;
     display: flex; flex-direction: column; align-items: center;
@@ -39,7 +39,7 @@
   }
   .hud-stats span { display: inline-flex; align-items: center; gap: 4px; }
 
-  /* 左下 HP 奧義 */
+  /* 左下角血量與奧義槽 */
   #player-hud {
     position: absolute; bottom: 20px; left: 20px;
     display: flex; flex-direction: column; gap: 6px;
@@ -47,7 +47,7 @@
   }
   .gauge-box {
     display: flex; align-items: center; gap: 8px;
-    background: rgba(250,247,242,0.85); padding: 4px 10px;
+    background: rgba(250,247,242,0.9); padding: 4px 10px;
     border: 1.5px solid #2B2A29; border-radius: 6px;
     box-shadow: 2px 2px 0 rgba(43,42,41,0.3); font-size: 13px; font-weight: 900;
   }
@@ -55,7 +55,7 @@
   .hp-fill { width: 100%; height: 100%; background: #FF2A4D; transition: width 0.1s; }
   .ult-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #FFB300, #FF1744); }
 
-  /* 觸控控制 */
+  /* 觸控虛擬控制 */
   #touch-controls {
     position: absolute; width: 100%; height: 100%;
     top: 0; left: 0; pointer-events: none; z-index: 20; display: none;
@@ -87,10 +87,10 @@
   .btn-parry { border-color: #00A86B; color: #00A86B; }
   .btn-ult { border-color: #C93B2B; color: #C93B2B; }
 
-  /* 彈窗共通 */
+  /* 彈窗遮罩共通 */
   .modal-overlay {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(30, 28, 26, 0.7); backdrop-filter: blur(4px);
+    background: rgba(30, 28, 26, 0.72); backdrop-filter: blur(4px);
     display: none; justify-content: center; align-items: center;
     z-index: 100;
   }
@@ -108,7 +108,7 @@
     margin: 6px auto 0;
   }
 
-  /* 升級選單 */
+  /* 升級繪馬三選一 */
   .cards-row { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
   .upgrade-card {
     width: 220px; background: #FFFDF9; border: 2px solid #2B2A29; border-radius: 8px;
@@ -128,7 +128,7 @@
   .type-passive { background: #C93B2B22; color: #C93B2B; border: 1px solid #C93B2B88; }
   .card-desc { font-size: 12px; color: #555; text-align: center; line-height: 1.4; min-height: 36px; }
 
-  /* 主菜單介面 */
+  /* 主畫面介面 */
   #main-menu {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -136,11 +136,11 @@
     z-index: 90;
   }
   .game-logo {
-    font-size: 52px; font-weight: 900; color: #2B2A29; letter-spacing: 4px;
+    font-size: 54px; font-weight: 900; color: #2B2A29; letter-spacing: 4px;
     text-shadow: 3px 3px 0 #EDE5D8, 5px 5px 0 #C93B2B; margin-bottom: 8px; text-align: center;
   }
   .game-sub { font-size: 16px; color: #665; letter-spacing: 6px; margin-bottom: 24px; font-weight: bold; }
-  .menu-btn-group { display: flex; flex-direction: column; gap: 12px; width: 220px; }
+  .menu-btn-group { display: flex; flex-direction: column; gap: 14px; width: 230px; }
   .menu-btn {
     padding: 12px 0; background: #FAF7F2; border: 2px solid #2B2A29; border-radius: 8px;
     font-size: 16px; font-weight: 900; color: #2B2A29; cursor: pointer;
@@ -154,7 +154,7 @@
     font-weight: 900; color: #2B2A29; box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
   }
 
-  /* 養成 / 成就介面 */
+  /* 道場養成 / 成就名錄 */
   .upgrades-grid, .achieve-list {
     display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
     max-height: 60vh; overflow-y: auto; padding: 8px; width: 560px; max-width: 85vw;
@@ -181,16 +181,16 @@
   .ach-locked { color: #888; }
 
   /* 結算介面 */
-  #game-over-modal .washi-board { text-align: center; min-width: 300px; }
+  #game-over-modal .washi-board { text-align: center; min-width: 320px; }
   .over-stat { margin: 8px 0; font-size: 15px; color: #444; }
-  .gold-earned { font-size: 20px; color: #C93B2B; font-weight: 900; margin: 12px 0; }
+  .gold-earned { font-size: 22px; color: #C93B2B; font-weight: 900; margin: 12px 0; }
 </style>
 </head>
 <body>
 <div id="game-container">
   <canvas id="gameCanvas"></canvas>
 
-  <!-- 頂部 HUD -->
+  <!-- 頂部資訊 HUD -->
   <div id="top-hud">
     <div class="exp-bar-wrap"><div id="expFill" class="exp-bar-fill"></div></div>
     <div class="hud-stats">
@@ -201,7 +201,7 @@
     </div>
   </div>
 
-  <!-- 玩家狀態 -->
+  <!-- 角色數值 HUD -->
   <div id="player-hud">
     <div class="gauge-box">
       <span>體力</span>
@@ -211,4 +211,1607 @@
     <div class="gauge-box">
       <span>奧義</span>
       <div class="bar-bg"><div id="ultFill" class="ult-fill"></div></div>
-      <span id="ultTxt" style
+      <span id="ultTxt" style="font-size:10px; color:#C93B2B;">[E]</span>
+    </div>
+  </div>
+
+  <!-- 行動控制 -->
+  <div id="touch-controls">
+    <div id="joystick-zone"><div class="joy-base"></div><div id="joyStick" class="joy-stick"></div></div>
+    <div class="action-buttons">
+      <div class="act-btn btn-dash" id="btnDash">疾<span>DASH</span></div>
+      <div class="act-btn btn-parry" id="btnParry">見切<span>PARRY</span></div>
+      <div class="act-btn btn-ult" id="btnUlt">滅<span>ULT</span></div>
+    </div>
+  </div>
+
+  <!-- 主畫面 -->
+  <div id="main-menu">
+    <div class="currency-pill">
+      <span>🪙 金判:</span><span id="menuGoldDisplay">0</span>
+    </div>
+    <div class="game-logo">竹隱墨寶</div>
+    <div class="game-sub">～百鬼夜行・浪人貓熊傳～</div>
+    <div class="menu-btn-group">
+      <button class="menu-btn" id="btnStartGame">出陣合戰</button>
+      <button class="menu-btn" id="btnOpenDojo">道場修行 (永久強化)</button>
+      <button class="menu-btn" id="btnOpenAchieve">百鬼繪卷 (成就獎勵)</button>
+    </div>
+  </div>
+
+  <!-- 道場天賦強化彈窗 -->
+  <div id="dojo-modal" class="modal-overlay">
+    <div class="washi-board">
+      <div class="board-title">道場修業・永久天賦</div>
+      <div class="upgrades-grid" id="dojoGrid"></div>
+      <button class="close-board-btn" id="btnCloseDojo">返回庭園</button>
+    </div>
+  </div>
+
+  <!-- 百鬼繪卷彈窗 -->
+  <div id="achieve-modal" class="modal-overlay">
+    <div class="washi-board">
+      <div class="board-title">百鬼繪卷・武名成就</div>
+      <div class="achieve-list" id="achieveList"></div>
+      <button class="close-board-btn" id="btnCloseAchieve">返回庭園</button>
+    </div>
+  </div>
+
+  <!-- 升級三選一 -->
+  <div id="upgrade-modal" class="modal-overlay">
+    <div class="washi-board">
+      <div class="board-title">悟得奧義・心法精進</div>
+      <div class="cards-row" id="upgradeCards"></div>
+    </div>
+  </div>
+
+  <!-- 結算彈窗 -->
+  <div id="game-over-modal" class="modal-overlay">
+    <div class="washi-board">
+      <div class="board-title" id="overTitle">力盡氣絕</div>
+      <div class="over-stat">存活時長：<strong id="overTime">00:00</strong></div>
+      <div class="over-stat">斬妖數量：<strong id="overKills">0</strong></div>
+      <div class="gold-earned">折算金判：+<span id="overGold">0</span> 🪙</div>
+      <button class="close-board-btn" id="btnRestart">返回道場</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ==================== 1. 音效合成引擎 (Web Audio API) ==================== */
+class SoundEngine {
+  constructor() {
+    this.ctx = null;
+    this.init();
+  }
+  init() {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (AudioCtx) this.ctx = new AudioCtx();
+  }
+  ensureCtx() {
+    if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+  }
+  playSlash() {
+    if (!this.ctx) return;
+    this.ensureCtx();
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const filter = this.ctx.createBiquadFilter();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(800, t);
+    osc.frequency.exponentialRampToValueAtTime(140, t + 0.12);
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(3200, t);
+    filter.frequency.exponentialRampToValueAtTime(800, t + 0.12);
+    gain.gain.setValueAtTime(0.24, t);
+    gain.gain.linearRampToValueAtTime(0.01, t + 0.12);
+    osc.connect(filter); filter.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.13);
+  }
+  playParry() {
+    if (!this.ctx) return;
+    this.ensureCtx();
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(1500, t);
+    osc.frequency.exponentialRampToValueAtTime(3000, t + 0.08);
+    gain.gain.setValueAtTime(0.45, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.28);
+  }
+  playHit() {
+    if (!this.ctx) return;
+    this.ensureCtx();
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(160, t);
+    osc.frequency.exponentialRampToValueAtTime(40, t + 0.15);
+    gain.gain.setValueAtTime(0.3, t);
+    gain.gain.linearRampToValueAtTime(0.01, t + 0.15);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.16);
+  }
+  playCoin() {
+    if (!this.ctx) return;
+    this.ensureCtx();
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(987.77, t);
+    osc.frequency.setValueAtTime(1318.51, t + 0.07);
+    gain.gain.setValueAtTime(0.2, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.25);
+  }
+  playLevelUp() {
+    if (!this.ctx) return;
+    this.ensureCtx();
+    const t = this.ctx.currentTime;
+    [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, t + i * 0.08);
+      gain.gain.setValueAtTime(0.2, t + i * 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.08 + 0.3);
+      osc.connect(gain); gain.connect(this.ctx.destination);
+      osc.start(t + i * 0.08); osc.stop(t + i * 0.08 + 0.32);
+    });
+  }
+  playTaiko() {
+    if (!this.ctx) return;
+    this.ensureCtx();
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(120, t);
+    osc.frequency.exponentialRampToValueAtTime(30, t + 0.4);
+    gain.gain.setValueAtTime(0.5, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.42);
+  }
+}
+const audio = new SoundEngine();
+
+/* ==================== 2. 存檔與天賦成就系統 ==================== */
+const SAVE_KEY = "PANDA_SURVIVOR_SAVE_2026";
+let userSave = {
+  gold: 0,
+  talents: {
+    hp: 0,       // 體力上限 +35/級
+    atk: 0,      // 傷害 +10%/級
+    spd: 0,      // 跑速 +7%/級
+    cdr: 0       // 冷卻 -6%/級
+  },
+  stats: {
+    totalKills: 0,
+    totalBossKills: 0,
+    totalParries: 0,
+    maxTime: 0,
+    totalGold: 0
+  },
+  achievements: {}
+};
+
+function loadSave() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      userSave = {
+        ...userSave,
+        ...parsed,
+        talents: { ...userSave.talents, ...parsed.talents },
+        stats: { ...userSave.stats, ...parsed.stats },
+        achievements: { ...parsed.achievements }
+      };
+    }
+  } catch(e) { console.warn(e); }
+  updateMenuGold();
+}
+function writeSave() {
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(userSave)); } catch(e){}
+  updateMenuGold();
+}
+function updateMenuGold() {
+  const el = document.getElementById('menuGoldDisplay');
+  if (el) el.innerText = userSave.gold;
+}
+
+const TALENT_DEFS = {
+  hp:  { name: "金剛體魄", desc: "生命上限 +35", max: 5, baseCost: 80, costMult: 1.5 },
+  atk: { name: "修羅氣勁", desc: "全武技傷害 +10%", max: 5, baseCost: 100, costMult: 1.6 },
+  spd: { name: "八咫神足", desc: "浪人跑速 +7%", max: 5, baseCost: 80, costMult: 1.5 },
+  cdr: { name: "明鏡心眼", desc: "武技冷卻縮減 -6%", max: 5, baseCost: 120, costMult: 1.7 }
+};
+
+const ACHIEVE_DEFS = [
+  { id: 'first_blood', name: '初露鋒芒', desc: '累計斬殺 50 隻妖魔', reward: 100, check: s => s.totalKills >= 50 },
+  { id: 'blade_master', name: '百人一閃', desc: '累計斬殺 300 隻妖魔', reward: 250, check: s => s.totalKills >= 300 },
+  { id: 'parry_god', name: '無心見切', desc: '成功施展 15 次居合彈反', reward: 200, check: s => s.totalParries >= 15 },
+  { id: 'boss_slayer', name: '退治大妖', desc: '斬殺任一首領鬼神', reward: 400, check: s => s.totalBossKills >= 1 },
+  { id: 'survivor_1', name: '堅定心性', desc: '單局存活超過 3 分鐘', reward: 300, check: s => s.maxTime >= 180 },
+  { id: 'rich_panda', name: '富貴貓熊', desc: '累計獲取 800 枚金判', reward: 300, check: s => s.totalGold >= 800 }
+];
+
+/* ==================== 3. 核心變數配置 ==================== */
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+let gameState = 'MENU'; // 'MENU', 'PLAYING', 'UPGRADE', 'GAMEOVER'
+let gameTime = 0;
+let killCount = 0;
+let sessionGold = 0;
+let screenShake = 0;
+let hitStopFrames = 0;
+let lastTimestamp = 0;
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+const camera = { x: 0, y: 0 };
+
+/* 玩家實體 */
+const player = {
+  x: 0, y: 0,
+  radius: 20,
+  maxHp: 250,
+  hp: 250,
+  speed: 3.5,
+  facing: 1,
+  aimAngle: 0,
+  level: 1,
+  exp: 0,
+  nextExp: 20,
+  ultCharge: 0,
+  maxUlt: 100,
+  
+  // 動作狀態
+  isDashing: false,
+  dashCooldown: 0,
+  dashTimer: 0,
+  isParrying: false,
+  parryTimer: 0,
+  parryCooldown: 0,
+  invincibleTimer: 0,
+  
+  // 動態表現
+  breath: 0,
+  walkCycle: 0,
+  blinkTimer: 180,
+  isBlinking: false,
+  
+  // 技能
+  weapons: {},
+  passives: {},
+
+  initTalents() {
+    this.maxHp = 250 + userSave.talents.hp * 35;
+    this.hp = this.maxHp;
+    this.speed = 3.5 * (1 + userSave.talents.spd * 0.07);
+    this.damageMult = 1 + userSave.talents.atk * 0.10;
+    this.cdrMult = Math.max(0.4, 1 - userSave.talents.cdr * 0.06);
+    this.weapons = {
+      bamboo_slash: { level: 1, timer: 0 }
+    };
+    this.passives = {};
+  }
+};
+
+/* 實體池 */
+let enemies = [];
+let projectiles = [];
+let enemyProjectiles = [];
+let pickups = [];
+let particles = [];
+let textPopups = [];
+let destructibles = [];
+
+/* ==================== 4. 技能與武器庫 ==================== */
+const SKILL_DATABASE = {
+  bamboo_slash: {
+    type: 'weapon', name: '竹影水嵐斬', maxLvl: 8,
+    desc: '向朝向揮出水藍極光墨刃，穿透前方群妖。',
+    cd: 0.85,
+    attack: (lvl) => {
+      const count = lvl >= 4 ? (lvl >= 7 ? 3 : 2) : 1;
+      const dmg = (32 + lvl * 9) * player.damageMult;
+      const baseAngle = player.aimAngle;
+      audio.playSlash();
+      for (let i = 0; i < count; i++) {
+        const spread = count > 1 ? (i - (count - 1) / 2) * 0.25 : 0;
+        const ang = baseAngle + spread;
+        projectiles.push({
+          type: 'bamboo_slash',
+          x: player.x, y: player.y,
+          vx: Math.cos(ang) * 9.5, vy: Math.sin(ang) * 9.5,
+          angle: ang, radius: 24 + lvl * 2,
+          dmg, life: 0.45, pierce: 3 + lvl, hits: new Set()
+        });
+      }
+    }
+  },
+  ofuda_flame: {
+    type: 'weapon', name: '破邪・業火急急如律令', maxLvl: 8,
+    desc: '祭出追蹤神符，命中妖魔引爆水藍狐火。',
+    cd: 1.2,
+    attack: (lvl) => {
+      const count = 2 + Math.floor(lvl / 2);
+      const dmg = (24 + lvl * 7) * player.damageMult;
+      for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+          if (gameState !== 'PLAYING') return;
+          projectiles.push({
+            type: 'ofuda',
+            x: player.x, y: player.y,
+            angle: Math.random() * Math.PI * 2,
+            speed: 7.2, target: null,
+            dmg, life: 2.2, hits: new Set()
+          });
+        }, i * 90);
+      }
+    }
+  },
+  sakura_storm: {
+    type: 'weapon', name: '櫻吹雪・散華之境', maxLvl: 8,
+    desc: '召喚迴旋櫻花刃瓣，化為護身真空絞殺之刃。',
+    cd: 2.5,
+    attack: (lvl) => {
+      const count = 4 + lvl;
+      const dmg = (18 + lvl * 5) * player.damageMult;
+      for (let i = 0; i < count; i++) {
+        const ang = (Math.PI * 2 / count) * i;
+        projectiles.push({
+          type: 'sakura',
+          orbitAngle: ang,
+          dist: 55 + lvl * 4,
+          dmg, life: 2.2 + lvl * 0.15, hits: new Set()
+        });
+      }
+    }
+  },
+  thunder_strike: {
+    type: 'weapon', name: '八咫神雷・天誅降臨', maxLvl: 8,
+    desc: '召喚九天玄雷，隨機轟頂重創周圍狂暴妖魔。',
+    cd: 1.8,
+    attack: (lvl) => {
+      const bolts = 1 + Math.floor(lvl / 2);
+      const dmg = (55 + lvl * 16) * player.damageMult;
+      for (let i = 0; i < bolts; i++) {
+        let target = enemies[Math.floor(Math.random() * enemies.length)];
+        let tx = target ? target.x : player.x + (Math.random() - 0.5) * 400;
+        let ty = target ? target.y : player.y + (Math.random() - 0.5) * 400;
+        setTimeout(() => {
+          if (gameState !== 'PLAYING') return;
+          audio.playTaiko();
+          screenShake = Math.max(screenShake, 7);
+          triggerThunderArea(tx, ty, 60 + lvl * 4, dmg);
+        }, i * 150);
+      }
+    }
+  },
+  iaijutsu: {
+    type: 'passive', name: '居合心法', maxLvl: 5,
+    desc: '拔刀之勢凌厲，所有武技傷害提升 +15%。'
+  },
+  gale_stride: {
+    type: 'passive', name: '疾風之步', maxLvl: 5,
+    desc: '身輕如燕，移動速度提升 +10%，衝刺冷卻 -10%。'
+  },
+  mind_eye: {
+    type: 'passive', name: '明鏡止水', maxLvl: 5,
+    desc: '心如止水，所有武技之冷卻時間縮減 -8%。'
+  },
+  soul_magnet: {
+    type: 'passive', name: '魂魄牽引', maxLvl: 5,
+    desc: '神念外放，勾玉與掉落物之吸引範圍大幅擴大。'
+  },
+  iron_body: {
+    type: 'passive', name: '霸者金剛身', maxLvl: 5,
+    desc: '體魄強韌，受到之妖魔傷害減免 12%，每秒微量回復。'
+  }
+};
+
+/* ==================== 5. 動態預覽卡牌繪製 (Mini Canvas) ==================== */
+function renderMiniPreview(cEl, skillKey, frame) {
+  const c = cEl.getContext('2d');
+  const w = cEl.width, h = cEl.height;
+  c.clearRect(0, 0, w, h);
+  c.save();
+  c.translate(w / 2, h / 2);
+
+  // 迷你貓熊投影
+  c.fillStyle = 'rgba(43,42,41,0.15)';
+  c.beginPath(); c.ellipse(0, 22, 16, 6, 0, 0, Math.PI * 2); c.fill();
+
+  if (skillKey === 'bamboo_slash') {
+    const sweep = (frame * 0.12) % (Math.PI * 2);
+    c.strokeStyle = '#00F2FF'; c.lineWidth = 4; c.lineCap = 'round';
+    c.beginPath(); c.arc(0, 0, 32, sweep, sweep + 1.2); c.stroke();
+    c.strokeStyle = '#2B2A29'; c.lineWidth = 1.5;
+    c.beginPath(); c.arc(0, 0, 35, sweep, sweep + 1.1); c.stroke();
+  } else if (skillKey === 'ofuda_flame') {
+    const t = frame * 0.08;
+    for (let i = 0; i < 3; i++) {
+      const a = t + i * 2.1;
+      const r = 24 + Math.sin(t * 2 + i) * 8;
+      const ox = Math.cos(a) * r, oy = Math.sin(a) * r;
+      c.save(); c.translate(ox, oy); c.rotate(a);
+      c.fillStyle = '#FAF7F2'; c.strokeStyle = '#FF2A4D'; c.lineWidth = 1.5;
+      c.fillRect(-4, -8, 8, 16); c.strokeRect(-4, -8, 8, 16);
+      c.fillStyle = '#00F2FF'; c.beginPath(); c.arc(0, 10, 3, 0, Math.PI*2); c.fill();
+      c.restore();
+    }
+  } else if (skillKey === 'sakura_storm') {
+    const t = frame * 0.1;
+    for (let i = 0; i < 5; i++) {
+      const a = t + (i * Math.PI * 2 / 5);
+      const ox = Math.cos(a) * 36, oy = Math.sin(a) * 36;
+      c.fillStyle = '#FF4081';
+      c.beginPath(); c.ellipse(ox, oy, 6, 3, a, 0, Math.PI * 2); c.fill();
+    }
+  } else if (skillKey === 'thunder_strike') {
+    if (Math.floor(frame / 12) % 2 === 0) {
+      c.strokeStyle = '#FFB300'; c.lineWidth = 3;
+      c.beginPath();
+      c.moveTo(20, -40); c.lineTo(10, -10); c.lineTo(25, 0); c.lineTo(15, 25);
+      c.stroke();
+      c.strokeStyle = '#00F2FF'; c.lineWidth = 1.5; c.stroke();
+    }
+  } else {
+    const r = 22 + Math.sin(frame * 0.1) * 4;
+    c.strokeStyle = '#00A86B'; c.lineWidth = 2.5; c.setLineDash([4, 4]);
+    c.beginPath(); c.arc(0, 0, r, 0, Math.PI * 2); c.stroke();
+  }
+  c.restore();
+}
+
+let previewAnimFrame = 0;
+function animateUpgradePreviews() {
+  if (gameState !== 'UPGRADE') return;
+  previewAnimFrame++;
+  document.querySelectorAll('.card-preview-canvas').forEach(cvs => {
+    const k = cvs.getAttribute('data-skill');
+    if (k) renderMiniPreview(cvs, k, previewAnimFrame);
+  });
+  requestAnimationFrame(animateUpgradePreviews);
+}
+
+/* ==================== 6. 角色繪製：超萌又帥氣的貓熊浪人 ==================== */
+function drawPandaRonin(ctx, p) {
+  ctx.save();
+  ctx.translate(p.x, p.y);
+  if (p.facing < 0) ctx.scale(-1, 1);
+
+  const breathY = Math.sin(p.breath) * 1.5;
+  const walkBob = Math.sin(p.walkCycle) * 2;
+
+  // 1. 地面柔和陰影
+  ctx.fillStyle = 'rgba(43, 42, 41, 0.22)';
+  ctx.beginPath();
+  ctx.ellipse(0, 20, 22 + (p.isDashing ? 8 : 0), 7, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 衝刺殘影
+  if (p.isDashing || p.invincibleTimer > 0) {
+    ctx.strokeStyle = '#00F2FF'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(0, 2 + breathY, 24, 0, Math.PI * 2); ctx.stroke();
+  }
+
+  // 2. 身軀與四肢
+  ctx.save();
+  ctx.translate(0, breathY + walkBob);
+
+  // 腳掌
+  ctx.fillStyle = '#2B2A29';
+  ctx.beginPath();
+  ctx.ellipse(-8, 16, 6, 4, -0.2, 0, Math.PI * 2);
+  ctx.ellipse(8, 16, 6, 4, 0.2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 圓滾滾白身軀
+  ctx.fillStyle = '#FFFFFF';
+  ctx.beginPath(); ctx.ellipse(0, 6, 17, 15, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = '#2B2A29'; ctx.lineWidth = 2.2; ctx.stroke();
+
+  // 黑色浪人羽織背心 (Haori)
+  ctx.fillStyle = '#2B2A29';
+  ctx.beginPath();
+  ctx.moveTo(-16, -2); ctx.quadraticCurveTo(-8, 12, -4, 18);
+  ctx.lineTo(4, 18); ctx.quadraticCurveTo(8, 12, 16, -2);
+  ctx.quadraticCurveTo(12, 8, 0, 12);
+  ctx.closePath();
+  ctx.fill();
+
+  // 朱紅腰帶
+  ctx.strokeStyle = '#C93B2B'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(-14, 10); ctx.lineTo(14, 10); ctx.stroke();
+
+  // 3. 毛茸茸圓頭
+  ctx.fillStyle = '#FFFFFF';
+  ctx.beginPath(); ctx.arc(0, -10, 18, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = '#2B2A29'; ctx.lineWidth = 2.2; ctx.stroke();
+
+  // 黑色大圓耳
+  ctx.fillStyle = '#2B2A29';
+  ctx.beginPath();
+  ctx.ellipse(-14, -25, 7, 6, -0.4, 0, Math.PI * 2);
+  ctx.ellipse(14, -25, 7, 6, 0.4, 0, Math.PI * 2);
+  ctx.fill();
+  // 耳心粉紅
+  ctx.fillStyle = 'rgba(255, 140, 160, 0.45)';
+  ctx.beginPath();
+  ctx.ellipse(-14, -25, 3.5, 3, -0.4, 0, Math.PI * 2);
+  ctx.ellipse(14, -25, 3.5, 3, 0.4, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 招牌熊貓黑眼圈
+  ctx.fillStyle = '#2B2A29';
+  ctx.beginPath();
+  ctx.ellipse(-7, -10, 5.5, 7, -0.25, 0, Math.PI * 2);
+  ctx.ellipse(7, -10, 5.5, 7, 0.25, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 帥氣動漫高光眼珠
+  if (!p.isBlinking) {
+    ctx.fillStyle = '#00F2FF';
+    ctx.beginPath();
+    ctx.arc(-5.5, -10, 2.5, 0, Math.PI * 2);
+    ctx.arc(8.5, -10, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+    // 眼神高光
+    ctx.fillStyle = '#FFF';
+    ctx.beginPath();
+    ctx.arc(-6.5, -11.5, 1, 0, Math.PI * 2);
+    ctx.arc(7.5, -11.5, 1, 0, Math.PI * 2);
+    ctx.fill();
+  } else {
+    ctx.strokeStyle = '#FFF'; ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(-9, -10); ctx.lineTo(-4, -10);
+    ctx.moveTo(5, -10); ctx.lineTo(10, -10);
+    ctx.stroke();
+  }
+
+  // 可愛腮紅
+  ctx.fillStyle = 'rgba(255, 105, 135, 0.45)';
+  ctx.beginPath();
+  ctx.ellipse(-12, -4, 4, 2.5, 0, 0, Math.PI * 2);
+  ctx.ellipse(12, -4, 4, 2.5, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 三角鼻與嘴角
+  ctx.fillStyle = '#2B2A29';
+  ctx.beginPath();
+  ctx.moveTo(-2, -6); ctx.lineTo(2, -6); ctx.lineTo(0, -4); ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = '#2B2A29'; ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ctx.moveTo(0, -4); ctx.lineTo(0, -2);
+  ctx.arc(-2, -1, 2, 0, Math.PI);
+  ctx.moveTo(0, -2);
+  ctx.arc(2, -1, 2, 0, Math.PI);
+  ctx.stroke();
+
+  // 4. 頭頂日式菅笠斗笠
+  ctx.save();
+  ctx.translate(0, -26);
+  ctx.fillStyle = '#D6B475';
+  ctx.beginPath();
+  ctx.moveTo(0, -12); ctx.lineTo(26, 6); ctx.lineTo(-26, 6); ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = '#7C5C26'; ctx.lineWidth = 1.5; ctx.stroke();
+  ctx.strokeStyle = '#C93B2B'; ctx.lineWidth = 2.5;
+  ctx.beginPath(); ctx.moveTo(-20, 3); ctx.lineTo(20, 3); ctx.stroke();
+  // 飄揚紅帶
+  const flutter = Math.sin(p.walkCycle * 1.5) * 6;
+  ctx.beginPath();
+  ctx.moveTo(-18, 5); ctx.quadraticCurveTo(-24, 18, -26 + flutter, 28);
+  ctx.stroke();
+  ctx.restore();
+
+  // 5. 青竹居合太刀
+  ctx.save();
+  ctx.translate(14, 8);
+  ctx.rotate(0.35 + (p.isParrying ? -1.2 : 0));
+  ctx.fillStyle = '#1B5E20'; ctx.fillRect(-2, 0, 5, 24);
+  ctx.fillStyle = '#FFB300'; ctx.fillRect(-5, -2, 11, 3);
+  ctx.fillStyle = '#2B2A29'; ctx.fillRect(-2, -10, 5, 8);
+  ctx.restore();
+
+  ctx.restore();
+
+  // 見切彈反護體壁
+  if (p.isParrying) {
+    ctx.strokeStyle = '#00F2FF'; ctx.lineWidth = 3.5;
+    ctx.beginPath(); ctx.arc(0, 0, 32, -Math.PI * 0.7, Math.PI * 0.7); ctx.stroke();
+  }
+
+  ctx.restore();
+}
+
+/* ==================== 7. 神話級妖怪與首領繪製 ==================== */
+function drawEnemy(ctx, e) {
+  ctx.save();
+  ctx.translate(e.x, e.y);
+  const face = e.vx < 0 ? -1 : 1;
+  ctx.scale(face, 1);
+
+  // 投影
+  ctx.fillStyle = 'rgba(43,42,41,0.2)';
+  ctx.beginPath();
+  ctx.ellipse(0, e.radius, e.radius * 0.9, e.radius * 0.35, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  if (e.kind === 'tengu') {
+    const flap = Math.sin(gameTime * 14 + e.x) * 0.35;
+    ctx.fillStyle = '#1A1918';
+    ctx.beginPath();
+    ctx.moveTo(-6, -10); ctx.lineTo(-24, -28 + flap * 20); ctx.lineTo(-14, 2); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(6, -10); ctx.lineTo(24, -28 - flap * 20); ctx.lineTo(14, 2); ctx.fill();
+    ctx.fillStyle = '#3E2723'; ctx.beginPath(); ctx.arc(0, 0, 14, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#C93B2B'; ctx.beginPath(); ctx.arc(4, -2, 9, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#FF1744';
+    ctx.beginPath(); ctx.moveTo(8, -4); ctx.lineTo(20, -1); ctx.lineTo(8, 2); ctx.fill();
+    ctx.fillStyle = '#FFEB3B'; ctx.fillRect(6, -5, 3, 2);
+  }
+  else if (e.kind === 'ashigaru') {
+    ctx.fillStyle = '#1E1C1A';
+    ctx.beginPath(); ctx.moveTo(0, -22); ctx.lineTo(18, -10); ctx.lineTo(-18, -10); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = '#EDE8DF'; ctx.beginPath(); ctx.arc(0, -6, 9, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#FF1744';
+    ctx.beginPath(); ctx.arc(3, -7, 2, 0, Math.PI*2); ctx.arc(-3, -7, 2, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = '#D7CCC8'; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(0, 3); ctx.lineTo(0, 16);
+    ctx.moveTo(-8, 6); ctx.lineTo(8, 6);
+    ctx.moveTo(-6, 11); ctx.lineTo(6, 11); ctx.stroke();
+    ctx.strokeStyle = '#9E9E9E'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(6, 4); ctx.lineTo(18, 14); ctx.stroke();
+  }
+  else if (e.kind === 'kitsune') {
+    for (let i = -1; i <= 1; i++) {
+      const sway = Math.sin(gameTime * 8 + i * 1.5) * 6;
+      ctx.fillStyle = '#9C27B0';
+      ctx.beginPath(); ctx.ellipse(-14, 2 + i * 6 + sway, 12, 5, -0.4 + i * 0.2, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#E040FB';
+      ctx.beginPath(); ctx.ellipse(-14, 2 + i * 6 + sway, 7, 3, -0.4 + i * 0.2, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.fillStyle = '#FFF'; ctx.beginPath(); ctx.ellipse(2, -4, 11, 14, 0.2, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = '#FF1744'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(6, -8); ctx.lineTo(11, -5); ctx.stroke();
+  }
+  else if (e.kind === 'oni') {
+    ctx.fillStyle = '#C62828'; ctx.beginPath(); ctx.arc(0, -4, 20, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#212121';
+    ctx.beginPath(); ctx.moveTo(-10, -20); ctx.lineTo(-14, -34); ctx.lineTo(-5, -22); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(10, -20); ctx.lineTo(14, -34); ctx.lineTo(5, -22); ctx.fill();
+    ctx.fillStyle = '#1A1A1A'; ctx.fillRect(14, -14, 8, 32);
+    ctx.fillStyle = '#FF5252'; ctx.fillRect(12, -10, 12, 3);
+  }
+  else if (e.kind === 'boss_hanya') {
+    const aura = Math.sin(gameTime * 6) * 4;
+    ctx.fillStyle = 'rgba(213, 0, 0, 0.2)';
+    ctx.beginPath(); ctx.arc(0, 0, 48 + aura, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#FAF7F2'; ctx.beginPath(); ctx.arc(0, 0, 36, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = '#2B2A29'; ctx.lineWidth = 3; ctx.stroke();
+    ctx.fillStyle = '#212121';
+    ctx.beginPath(); ctx.moveTo(-20, -26); ctx.quadraticCurveTo(-45, -50, -32, -65); ctx.quadraticCurveTo(-25, -45, -10, -32); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(20, -26); ctx.quadraticCurveTo(45, -50, 32, -65); ctx.quadraticCurveTo(25, -45, 10, -32); ctx.fill();
+    ctx.fillStyle = '#FFD600'; ctx.beginPath(); ctx.arc(-14, -6, 6, 0, Math.PI*2); ctx.arc(14, -6, 6, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#D50000'; ctx.beginPath(); ctx.arc(-14, -6, 3, 0, Math.PI*2); ctx.arc(14, -6, 3, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#212121'; ctx.beginPath(); ctx.arc(0, 16, 14, 0, Math.PI); ctx.fill();
+  }
+  else if (e.kind === 'boss_tamamo') {
+    ctx.fillStyle = 'rgba(156, 39, 176, 0.25)';
+    ctx.beginPath(); ctx.arc(0, 0, 52, 0, Math.PI*2); ctx.fill();
+    for (let i = 0; i < 9; i++) {
+      const a = gameTime * 3 + (i * Math.PI * 2 / 9);
+      ctx.fillStyle = '#D500F9';
+      ctx.beginPath(); ctx.arc(Math.cos(a) * 44, Math.sin(a) * 44, 7, 0, Math.PI*2); ctx.fill();
+    }
+    ctx.fillStyle = '#311B92'; ctx.beginPath(); ctx.arc(0, 0, 34, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#FF1744'; ctx.fillRect(-8, -8, 16, 4);
+  }
+
+  // 血條
+  if (e.hp < e.maxHp) {
+    const bw = Math.max(30, e.radius * 1.5);
+    const pct = Math.max(0, e.hp / e.maxHp);
+    ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.fillRect(-bw/2, -e.radius - 12, bw, 5);
+    ctx.fillStyle = '#FF1744'; ctx.fillRect(-bw/2, -e.radius - 12, bw * pct, 5);
+  }
+
+  ctx.restore();
+}
+
+/* ==================== 8. 招式特效與居合見切彈反 ==================== */
+function updateAndDrawProjectiles(ctx, dt) {
+  for (let i = projectiles.length - 1; i >= 0; i--) {
+    const p = projectiles[i];
+    p.life -= dt;
+    if (p.life <= 0) { projectiles.splice(i, 1); continue; }
+
+    if (p.type === 'bamboo_slash') {
+      p.x += p.vx; p.y += p.vy;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle);
+      // 水藍極光刀刃特效
+      ctx.strokeStyle = '#00F2FF';
+      ctx.lineWidth = 6; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.arc(0, 0, p.radius, -0.7, 0.7); ctx.stroke();
+      ctx.strokeStyle = '#2B2A29'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(2, 0, p.radius - 3, -0.6, 0.6); ctx.stroke();
+      ctx.restore();
+
+      checkPlayerProjHit(p, 1);
+    }
+    else if (p.type === 'ofuda') {
+      if (!p.target || p.target.hp <= 0) {
+        let minD = 500, closest = null;
+        for (let e of enemies) {
+          const d = Math.hypot(e.x - p.x, e.y - p.y);
+          if (d < minD) { minD = d; closest = e; }
+        }
+        p.target = closest;
+      }
+      if (p.target) {
+        const ta = Math.atan2(p.target.y - p.y, p.target.x - p.x);
+        p.angle += (ta - p.angle) * 0.15;
+      }
+      p.x += Math.cos(p.angle) * p.speed;
+      p.y += Math.sin(p.angle) * p.speed;
+
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle);
+      ctx.fillStyle = '#FAF7F2'; ctx.strokeStyle = '#FF2A4D'; ctx.lineWidth = 1.8;
+      ctx.fillRect(-7, -12, 14, 24); ctx.strokeRect(-7, -12, 14, 24);
+      ctx.fillStyle = '#00F2FF'; ctx.beginPath(); ctx.arc(0, 8, 3.5, 0, Math.PI*2); ctx.fill();
+      ctx.restore();
+
+      checkPlayerProjHit(p, 0);
+    }
+    else if (p.type === 'sakura') {
+      p.orbitAngle += dt * 4;
+      p.x = player.x + Math.cos(p.orbitAngle) * p.dist;
+      p.y = player.y + Math.sin(p.orbitAngle) * p.dist;
+
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.orbitAngle);
+      ctx.fillStyle = '#FF4081';
+      ctx.beginPath(); ctx.ellipse(0, 0, 9, 4, 0, 0, Math.PI*2); ctx.fill();
+      ctx.restore();
+
+      checkPlayerProjHit(p, 2);
+    }
+    else if (p.type === 'reflected_orb') {
+      p.x += p.vx; p.y += p.vy;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.fillStyle = '#00F2FF'; ctx.beginPath(); ctx.arc(0, 0, 9, 0, Math.PI*2); ctx.fill();
+      ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 2; ctx.stroke();
+      ctx.restore();
+
+      checkPlayerProjHit(p, 0);
+    }
+  }
+
+  // 妖魔攻擊：嚴格使用鮮紅與妖紫，不准用藍色
+  for (let i = enemyProjectiles.length - 1; i >= 0; i--) {
+    const ep = enemyProjectiles[i];
+    ep.life -= dt;
+    if (ep.life <= 0) { enemyProjectiles.splice(i, 1); continue; }
+
+    ep.x += ep.vx; ep.y += ep.vy;
+
+    // 居合見切彈反判定
+    if (player.isParrying) {
+      const d = Math.hypot(ep.x - player.x, ep.y - player.y);
+      if (d < 45) {
+        audio.playParry();
+        screenShake = 12;
+        hitStopFrames = 5;
+        userSave.stats.totalParries++;
+        const revAng = Math.atan2(ep.y - player.y, ep.x - player.x);
+        projectiles.push({
+          type: 'reflected_orb',
+          x: ep.x, y: ep.y,
+          vx: Math.cos(revAng) * 12,
+          vy: Math.sin(revAng) * 12,
+          dmg: ep.dmg * 2.5,
+          life: 2.0, hits: new Set()
+        });
+        showPopup(player.x, player.y - 30, '見切！', '#00F2FF', 22);
+        enemyProjectiles.splice(i, 1);
+        continue;
+      }
+    }
+
+    const pDist = Math.hypot(ep.x - player.x, ep.y - player.y);
+    if (pDist < player.radius + ep.radius) {
+      if (player.invincibleTimer <= 0 && !player.isDashing) {
+        takeDamage(ep.dmg);
+      }
+      enemyProjectiles.splice(i, 1);
+      continue;
+    }
+
+    ctx.save();
+    ctx.translate(ep.x, ep.y);
+    ctx.fillStyle = ep.color || '#FF1744';
+    ctx.beginPath(); ctx.arc(0, 0, ep.radius || 6, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = '#D50000'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.restore();
+  }
+}
+
+function checkPlayerProjHit(p, mode) {
+  for (let e of enemies) {
+    if (p.hits.has(e)) continue;
+    const d = Math.hypot(e.x - p.x, e.y - p.y);
+    if (d < e.radius + (p.radius || 10)) {
+      p.hits.add(e);
+      damageEnemy(e, p.dmg);
+      audio.playHit();
+      if (mode === 1) {
+        p.pierce--;
+        if (p.pierce <= 0) { p.life = 0; break; }
+      } else if (mode === 0) {
+        p.life = 0; break;
+      }
+    }
+  }
+}
+
+function triggerThunderArea(x, y, radius, dmg) {
+  for (let e of enemies) {
+    if (Math.hypot(e.x - x, e.y - y) < radius + e.radius) {
+      damageEnemy(e, dmg);
+    }
+  }
+  for (let i = 0; i < 14; i++) {
+    particles.push({
+      x, y, vx: (Math.random()-0.5)*12, vy: (Math.random()-0.5)*12,
+      color: Math.random()>0.5 ? '#FFD600' : '#00F2FF', life: 0.35, size: 4
+    });
+  }
+}
+
+/* ==================== 9. 傷害計算、擊殺、金判與成就 ==================== */
+function damageEnemy(e, dmg) {
+  e.hp -= dmg;
+  showPopup(e.x, e.y, Math.round(dmg), '#2B2A29', 14);
+  if (e.hp <= 0) {
+    killEnemy(e);
+  }
+}
+
+function killEnemy(e) {
+  const idx = enemies.indexOf(e);
+  if (idx !== -1) enemies.splice(idx, 1);
+
+  killCount++;
+  userSave.stats.totalKills++;
+  if (e.kind.startsWith('boss')) userSave.stats.totalBossKills++;
+
+  pickups.push({ x: e.x, y: e.y, type: 'magatama', exp: e.expValue || 5 });
+
+  if (Math.random() < 0.35 || e.kind.startsWith('boss')) {
+    const val = e.kind.startsWith('boss') ? 50 : Math.floor(Math.random() * 3 + 1);
+    pickups.push({
+      x: e.x + (Math.random() - 0.5) * 16,
+      y: e.y + (Math.random() - 0.5) * 16,
+      type: 'gold', val
+    });
+  }
+
+  for (let i = 0; i < 12; i++) {
+    particles.push({
+      x: e.x, y: e.y,
+      vx: (Math.random() - 0.5) * 8, vy: (Math.random() - 0.5) * 8,
+      color: Math.random() > 0.4 ? '#FF2A4D' : '#00F2FF',
+      life: 0.4, size: 4
+    });
+  }
+
+  player.ultCharge = Math.min(player.maxUlt, player.ultCharge + 1.8);
+  checkAchievements();
+}
+
+function takeDamage(dmg) {
+  const reduction = (player.passives.iron_body ? player.passives.iron_body.level * 0.12 : 0);
+  const realDmg = Math.max(1, dmg * (1 - reduction));
+  player.hp -= realDmg;
+  player.invincibleTimer = 0.35;
+  screenShake = 10;
+  audio.playHit();
+  showPopup(player.x, player.y - 20, `-${Math.round(realDmg)}`, '#FF1744', 18);
+  if (player.hp <= 0) {
+    player.hp = 0;
+    triggerGameOver();
+  }
+}
+
+function showPopup(x, y, text, color, size = 16) {
+  textPopups.push({ x, y, text, color, size, life: 0.7 });
+}
+
+function checkAchievements() {
+  ACHIEVE_DEFS.forEach(a => {
+    if (!userSave.achievements[a.id] && a.check(userSave.stats)) {
+      userSave.achievements[a.id] = true;
+      userSave.gold += a.reward;
+      showPopup(player.x, player.y - 60, `【成就達成】${a.name}`, '#FFB300', 18);
+      writeSave();
+    }
+  });
+}
+
+/* ==================== 10. 全螢幕斷斬奧義 ==================== */
+function triggerUltimate() {
+  if (player.ultCharge < player.maxUlt) return;
+  player.ultCharge = 0;
+  audio.playTaiko();
+  screenShake = 22;
+  hitStopFrames = 12;
+
+  for (let i = 0; i < 8; i++) {
+    setTimeout(() => {
+      audio.playSlash();
+      enemies.forEach(e => {
+        damageEnemy(e, (160 + player.level * 25) * player.damageMult);
+      });
+      for (let k = 0; k < 20; k++) {
+        particles.push({
+          x: camera.x + Math.random() * canvas.width,
+          y: camera.y + Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 16, vy: (Math.random() - 0.5) * 16,
+          color: Math.random() > 0.5 ? '#00F2FF' : '#FF1744',
+          life: 0.5, size: 5
+        });
+      }
+    }, i * 70);
+  }
+  showPopup(player.x, player.y - 40, '奧義・天魔滅絕！', '#FF1744', 28);
+}
+
+/* ==================== 11. 地圖物件：神社石燈與古壺 ==================== */
+function initDestructibles() {
+  destructibles = [];
+  for (let i = 0; i < 35; i++) {
+    destructibles.push({
+      x: (Math.random() - 0.5) * 3600,
+      y: (Math.random() - 0.5) * 3600,
+      hp: 3,
+      type: Math.random() > 0.5 ? 'lantern' : 'pot'
+    });
+  }
+}
+
+function updateDestructibles(ctx) {
+  for (let i = destructibles.length - 1; i >= 0; i--) {
+    const d = destructibles[i];
+    for (let p of projectiles) {
+      if (Math.hypot(p.x - d.x, p.y - d.y) < 25) {
+        d.hp--;
+        if (d.hp <= 0) break;
+      }
+    }
+    if (d.hp <= 0) {
+      if (Math.random() > 0.4) {
+        pickups.push({ x: d.x, y: d.y, type: 'onigiri', val: 50 });
+      } else {
+        pickups.push({ x: d.x, y: d.y, type: 'gold', val: 5 });
+      }
+      destructibles.splice(i, 1);
+      continue;
+    }
+
+    ctx.save();
+    ctx.translate(d.x, d.y);
+    if (d.type === 'lantern') {
+      ctx.fillStyle = '#9E9E9E'; ctx.fillRect(-8, -14, 16, 26);
+      ctx.fillStyle = '#D7CCC8'; ctx.fillRect(-12, -22, 24, 8);
+      ctx.fillStyle = '#FFEB3B'; ctx.fillRect(-4, -10, 8, 8);
+    } else {
+      ctx.fillStyle = '#8D6E63'; ctx.beginPath(); ctx.ellipse(0, 0, 10, 12, 0, 0, Math.PI*2); ctx.fill();
+    }
+    ctx.restore();
+  }
+}
+
+/* ==================== 12. 升級三選一 ==================== */
+function checkLevelUp() {
+  if (player.exp >= player.nextExp) {
+    player.exp -= player.nextExp;
+    player.level++;
+    player.nextExp = Math.floor(player.nextExp * 1.35 + 10);
+    audio.playLevelUp();
+    showUpgradeMenu();
+  }
+}
+
+function showUpgradeMenu() {
+  gameState = 'UPGRADE';
+  const container = document.getElementById('upgradeCards');
+  container.innerHTML = '';
+  document.getElementById('upgrade-modal').style.display = 'flex';
+
+  const choices = getUpgradeChoices();
+  choices.forEach(ch => {
+    const card = document.createElement('div');
+    card.className = 'upgrade-card';
+    card.innerHTML = `
+      <canvas class="card-preview-canvas" width="190" height="100" data-skill="${ch.key}"></canvas>
+      <div class="card-name">${ch.name}</div>
+      <div class="card-type ${ch.isWeapon ? 'type-weapon' : 'type-passive'}">${ch.isWeapon ? '主動武技' : '心法被動'}・Lv.${ch.nextLvl}</div>
+      <div class="card-desc">${ch.desc}</div>
+    `;
+    card.onclick = () => {
+      applyUpgrade(ch);
+      document.getElementById('upgrade-modal').style.display = 'none';
+      gameState = 'PLAYING';
+    };
+    container.appendChild(card);
+  });
+
+  previewAnimFrame = 0;
+  animateUpgradePreviews();
+}
+
+function getUpgradeChoices() {
+  const pool = [];
+  for (let key in SKILL_DATABASE) {
+    const def = SKILL_DATABASE[key];
+    const isW = def.type === 'weapon';
+    const curLvl = isW ? (player.weapons[key]?.level || 0) : (player.passives[key]?.level || 0);
+    if (curLvl < def.maxLvl) {
+      pool.push({
+        key, name: def.name, isWeapon: isW,
+        nextLvl: curLvl + 1, desc: def.desc
+      });
+    }
+  }
+  pool.sort(() => Math.random() - 0.5);
+  return pool.slice(0, 3);
+}
+
+function applyUpgrade(ch) {
+  if (ch.isWeapon) {
+    if (!player.weapons[ch.key]) {
+      player.weapons[ch.key] = { level: 1, timer: 0 };
+    } else {
+      player.weapons[ch.key].level++;
+    }
+  } else {
+    if (!player.passives[ch.key]) {
+      player.passives[ch.key] = { level: 1 };
+    } else {
+      player.passives[ch.key].level++;
+    }
+  }
+}
+
+/* ==================== 13. 魔物生成與難度控制 ==================== */
+let spawnTimer = 0;
+let bossSpawned1 = false;
+let bossSpawned2 = false;
+
+function updateSpawns(dt) {
+  spawnTimer += dt;
+  const rate = Math.max(0.25, 1.2 - (gameTime / 240) * 0.8);
+
+  if (spawnTimer >= rate) {
+    spawnTimer = 0;
+    spawnEnemyBatch();
+  }
+
+  if (gameTime >= 90 && !bossSpawned1) {
+    bossSpawned1 = true;
+    spawnBoss('boss_hanya', 3500, '【羅剎般若・牛頭鬼神】');
+  }
+  if (gameTime >= 210 && !bossSpawned2) {
+    bossSpawned2 = true;
+    spawnBoss('boss_tamamo', 6500, '【大嶽丸・九尾夜叉尊】');
+  }
+}
+
+function spawnEnemyBatch() {
+  const count = Math.min(18, 2 + Math.floor(gameTime / 20));
+  const kinds = ['tengu', 'ashigaru'];
+  if (gameTime > 40) kinds.push('kitsune');
+  if (gameTime > 80) kinds.push('oni');
+
+  for (let i = 0; i < count; i++) {
+    const ang = Math.random() * Math.PI * 2;
+    const dist = 450 + Math.random() * 150;
+    const kind = kinds[Math.floor(Math.random() * kinds.length)];
+    let hp = 30 + (gameTime * 1.5);
+    let spd = 2.0;
+    let rad = 14;
+
+    if (kind === 'tengu') { spd = 3.2; hp *= 0.7; }
+    if (kind === 'oni') { spd = 1.3; hp *= 2.8; rad = 24; }
+
+    enemies.push({
+      kind, x: player.x + Math.cos(ang) * dist, y: player.y + Math.sin(ang) * dist,
+      vx: 0, vy: 0, hp, maxHp: hp, speed: spd, radius: rad,
+      expValue: kind === 'oni' ? 25 : 8,
+      shootTimer: Math.random() * 2
+    });
+  }
+}
+
+function spawnBoss(kind, hp, name) {
+  audio.playTaiko();
+  screenShake = 20;
+  showPopup(player.x, player.y - 80, `神話大妖降臨！${name}`, '#FF1744', 26);
+  const ang = Math.random() * Math.PI * 2;
+  enemies.push({
+    kind, x: player.x + Math.cos(ang) * 450, y: player.y + Math.sin(ang) * 450,
+    vx: 0, vy: 0, hp, maxHp: hp, speed: 1.6, radius: 40,
+    expValue: 300, shootTimer: 0
+  });
+}
+
+/* ==================== 14. 遊戲主循環與輸入判定 ==================== */
+const keys = {};
+window.addEventListener('keydown', e => {
+  keys[e.key.toLowerCase()] = true;
+  if (e.key === ' ' || e.code === 'Space') doParry();
+  if (e.key === 'Shift' || e.key.toLowerCase() === 'q') doDash();
+  if (e.key.toLowerCase() === 'e') triggerUltimate();
+});
+window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
+
+function doDash() {
+  if (player.dashCooldown > 0 || player.isDashing) return;
+  player.isDashing = true;
+  player.dashTimer = 0.22;
+  const reduction = player.passives.gale_stride ? player.passives.gale_stride.level * 0.1 : 0;
+  player.dashCooldown = Math.max(0.6, 1.2 * (1 - reduction));
+  player.invincibleTimer = 0.26;
+  audio.playSlash();
+}
+
+function doParry() {
+  if (player.parryCooldown > 0 || player.isParrying) return;
+  player.isParrying = true;
+  player.parryTimer = 0.22;
+  player.parryCooldown = 0.7;
+}
+
+// 虛擬搖桿
+const joy = { active: false, dx: 0, dy: 0, touchId: null };
+const joyZone = document.getElementById('joystick-zone');
+const joyStick = document.getElementById('joyStick');
+
+function handleTouchStart(e) {
+  for (let t of e.changedTouches) {
+    const rect = joyZone.getBoundingClientRect();
+    if (t.clientX >= rect.left && t.clientX <= rect.right && t.clientY >= rect.top && t.clientY <= rect.bottom) {
+      joy.active = true;
+      joy.touchId = t.identifier;
+      updateJoy(t.clientX, t.clientY, rect);
+      break;
+    }
+  }
+}
+function handleTouchMove(e) {
+  if (!joy.active) return;
+  for (let t of e.changedTouches) {
+    if (t.identifier === joy.touchId) {
+      updateJoy(t.clientX, t.clientY, joyZone.getBoundingClientRect());
+      break;
+    }
+  }
+}
+function handleTouchEnd(e) {
+  for (let t of e.changedTouches) {
+    if (t.identifier === joy.touchId) {
+      joy.active = false;
+      joy.dx = 0; joy.dy = 0;
+      joyStick.style.top = '40px'; joyStick.style.left = '40px';
+      break;
+    }
+  }
+}
+function updateJoy(cx, cy, r) {
+  const cx0 = r.left + r.width / 2, cy0 = r.top + r.height / 2;
+  let dx = cx - cx0, dy = cy - cy0;
+  const dist = Math.hypot(dx, dy);
+  const maxR = r.width / 2;
+  if (dist > maxR) { dx = (dx / dist) * maxR; dy = (dy / dist) * maxR; }
+  joyStick.style.left = `${40 + dx}px`;
+  joyStick.style.top = `${40 + dy}px`;
+  joy.dx = dx / maxR; joy.dy = dy / maxR;
+}
+window.addEventListener('touchstart', handleTouchStart, { passive: false });
+window.addEventListener('touchmove', handleTouchMove, { passive: false });
+window.addEventListener('touchend', handleTouchEnd, { passive: false });
+
+document.getElementById('btnDash').onclick = doDash;
+document.getElementById('btnParry').onclick = doParry;
+document.getElementById('btnUlt').onclick = triggerUltimate;
+
+function gameLoop(timestamp) {
+  requestAnimationFrame(gameLoop);
+  if (!lastTimestamp) lastTimestamp = timestamp;
+  const dt = Math.min(0.1, (timestamp - lastTimestamp) / 1000);
+  lastTimestamp = timestamp;
+
+  if (gameState !== 'PLAYING') return;
+
+  if (hitStopFrames > 0) { hitStopFrames--; return; }
+
+  gameTime += dt;
+  userSave.stats.maxTime = Math.max(userSave.stats.maxTime, gameTime);
+
+  // 移動
+  let mx = 0, my = 0;
+  if (keys['w'] || keys['arrowup']) my -= 1;
+  if (keys['s'] || keys['arrowdown']) my += 1;
+  if (keys['a'] || keys['arrowleft']) mx -= 1;
+  if (keys['d'] || keys['arrowright']) mx += 1;
+
+  if (joy.active) { mx = joy.dx; my = joy.dy; }
+
+  const len = Math.hypot(mx, my);
+  if (len > 0) {
+    const spd = player.isDashing ? player.speed * 2.3 : player.speed;
+    player.x += (mx / len) * spd;
+    player.y += (my / len) * spd;
+    player.facing = mx >= 0 ? 1 : -1;
+    player.walkCycle += dt * 14;
+    player.aimAngle = Math.atan2(my, mx);
+  } else {
+    player.walkCycle = 0;
+  }
+
+  // 呼吸與眨眼
+  player.breath += dt * 3.5;
+  player.blinkTimer--;
+  if (player.blinkTimer <= 0) {
+    player.isBlinking = true;
+    if (player.blinkTimer <= -10) { player.isBlinking = false; player.blinkTimer = 160 + Math.random() * 80; }
+  }
+
+  if (player.dashCooldown > 0) player.dashCooldown -= dt;
+  if (player.dashTimer > 0) { player.dashTimer -= dt; if (player.dashTimer <= 0) player.isDashing = false; }
+  if (player.parryCooldown > 0) player.parryCooldown -= dt;
+  if (player.parryTimer > 0) { player.parryTimer -= dt; if (player.parryTimer <= 0) player.isParrying = false; }
+  if (player.invincibleTimer > 0) player.invincibleTimer -= dt;
+
+  if (player.passives.iron_body) {
+    player.hp = Math.min(player.maxHp, player.hp + player.passives.iron_body.level * 0.8 * dt);
+  }
+
+  // 技能冷卻與觸發
+  for (let key in player.weapons) {
+    const wInst = player.weapons[key];
+    const wDef = SKILL_DATABASE[key];
+    wInst.timer += dt;
+    const cooldown = wDef.cd * player.cdrMult;
+    if (wInst.timer >= cooldown) {
+      wInst.timer = 0;
+      wDef.attack(wInst.level);
+    }
+  }
+
+  // 敵群行為
+  updateSpawns(dt);
+  for (let i = enemies.length - 1; i >= 0; i--) {
+    const e = enemies[i];
+    const dx = player.x - e.x, dy = player.y - e.y;
+    const d = Math.hypot(dx, dy);
+
+    if (d > 0) {
+      e.vx = (dx / d) * e.speed;
+      e.vy = (dy / d) * e.speed;
+      e.x += e.vx; e.y += e.vy;
+    }
+
+    if (d < e.radius + player.radius) {
+      if (!player.isDashing && player.invincibleTimer <= 0) {
+        takeDamage(e.kind.startsWith('boss') ? 35 : 12);
+      }
+    }
+
+    // 妖氣彈（嚴格鮮紅與妖紫）
+    if (e.kind === 'kitsune' || e.kind.startsWith('boss')) {
+      e.shootTimer += dt;
+      const interval = e.kind.startsWith('boss') ? 1.5 : 3.0;
+      if (e.shootTimer >= interval) {
+        e.shootTimer = 0;
+        const ang = Math.atan2(dy, dx);
+        if (e.kind === 'kitsune') {
+          enemyProjectiles.push({
+            x: e.x, y: e.y, vx: Math.cos(ang) * 4.5, vy: Math.sin(ang) * 4.5,
+            radius: 7, dmg: 16, life: 3.5, color: '#D500F9'
+          });
+        } else {
+          for (let k = 0; k < 8; k++) {
+            const sang = ang + (k * Math.PI * 2 / 8);
+            enemyProjectiles.push({
+              x: e.x, y: e.y, vx: Math.cos(sang) * 4.2, vy: Math.sin(sang) * 4.2,
+              radius: 9, dmg: 26, life: 4.5, color: '#FF1744'
+            });
+          }
+        }
+      }
+    }
+  }
+
+  // 掉落物拾取
+  const magnetRange = 75 + (player.passives.soul_magnet ? player.passives.soul_magnet.level * 45 : 0);
+  for (let i = pickups.length - 1; i >= 0; i--) {
+    const p = pickups[i];
+    const d = Math.hypot(player.x - p.x, player.y - p.y);
+    if (d < magnetRange) {
+      p.x += (player.x - p.x) * 0.18;
+      p.y += (player.y - p.y) * 0.18;
+    }
+    if (d < player.radius + 12) {
+      if (p.type === 'magatama') {
+        player.exp += p.exp;
+        checkLevelUp();
+      } else if (p.type === 'gold') {
+        sessionGold += p.val;
+        userSave.gold += p.val;
+        userSave.stats.totalGold += p.val;
+        audio.playCoin();
+        showPopup(p.x, p.y, `+${p.val}🪙`, '#FFB300', 14);
+      } else if (p.type === 'onigiri') {
+        player.hp = Math.min(player.maxHp, player.hp + p.val);
+        showPopup(p.x, p.y, `+${p.val} HP`, '#00A86B', 16);
+      }
+      pickups.splice(i, 1);
+    }
+  }
+
+  // 鏡頭
+  camera.x += (player.x - canvas.width / 2 - camera.x) * 0.1;
+  camera.y += (player.y - canvas.height / 2 - camera.y) * 0.1;
+
+  renderScene();
+  updateHUD();
+}
+
+/* ==================== 15. 畫面渲染 ==================== */
+function renderScene() {
+  ctx.save();
+
+  let sx = 0, sy = 0;
+  if (screenShake > 0) {
+    sx = (Math.random() - 0.5) * screenShake;
+    sy = (Math.random() - 0.5) * screenShake;
+    screenShake *= 0.88;
+    if (screenShake < 0.5) screenShake = 0;
+  }
+  ctx.translate(-camera.x + sx, -camera.y + sy);
+
+  drawBackgroundMap(ctx);
+  updateDestructibles(ctx);
+
+  pickups.forEach(p => {
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    if (p.type === 'magatama') {
+      ctx.fillStyle = '#00F2FF'; ctx.beginPath(); ctx.arc(0, 0, 5, 0, Math.PI*2); ctx.fill();
+      ctx.strokeStyle = '#2B2A29'; ctx.lineWidth = 1.2; ctx.stroke();
+    } else if (p.type === 'gold') {
+      ctx.fillStyle = '#FFB300'; ctx.beginPath(); ctx.ellipse(0, 0, 6, 8, 0, 0, Math.PI*2); ctx.fill();
+      ctx.strokeStyle = '#8D6E63'; ctx.stroke();
+    } else {
+      ctx.fillStyle = '#FAF7F2'; ctx.beginPath(); ctx.moveTo(0, -7); ctx.lineTo(7, 5); ctx.lineTo(-7, 5); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = '#2B2A29'; ctx.fillRect(-3, 0, 6, 5);
+    }
+    ctx.restore();
+  });
+
+  enemies.forEach(e => drawEnemy(ctx, e));
+  drawPandaRonin(ctx, player);
+  updateAndDrawProjectiles(ctx, 0.016);
+
+  // 粒子
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const pt = particles[i];
+    pt.life -= 0.02;
+    if (pt.life <= 0) { particles.splice(i, 1); continue; }
+    pt.x += pt.vx; pt.y += pt.vy;
+    ctx.fillStyle = pt.color;
+    ctx.beginPath(); ctx.arc(pt.x, pt.y, pt.size, 0, Math.PI*2); ctx.fill();
+  }
+
+  // 飄字
+  for (let i = textPopups.length - 1; i >= 0; i--) {
+    const tp = textPopups[i];
+    tp.life -= 0.02;
+    if (tp.life <= 0) { textPopups.splice(i, 1); continue; }
+    tp.y -= 0.8;
+    ctx.font = `900 ${tp.size}px 'Noto Serif TC'`;
+    ctx.fillStyle = tp.color;
+    ctx.fillText(tp.text, tp.x, tp.y);
+  }
+
+  ctx.restore();
+}
+
+function drawBackgroundMap(ctx) {
+  const startX = Math.floor((camera.x - 100) / 160) * 160;
+  const endX = startX + canvas.width + 320;
+  const startY = Math.floor((camera.y - 100) / 160) * 160;
+  const endY = startY + canvas.height + 320;
+
+  ctx.strokeStyle = 'rgba(43, 42, 41, 0.05)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (let x = startX; x <= endX; x += 160) {
+    ctx.moveTo(x, startY); ctx.lineTo(x, endY);
+  }
+  for (let y = startY; y <= endY; y += 160) {
+    ctx.moveTo(startX, y); ctx.lineTo(endX, y);
+  }
+  ctx.stroke();
+}
+
+function updateHUD() {
+  document.getElementById('hudLevel').innerText = player.level;
+  const m = Math.floor(gameTime / 60).toString().padStart(2, '0');
+  const s = Math.floor(gameTime % 60).toString().padStart(2, '0');
+  document.getElementById('hudTime').innerText = `${m}:${s}`;
+  document.getElementById('hudKills').innerText = killCount;
+  document.getElementById('hudGold').innerText = sessionGold;
+
+  const expPct = Math.min(100, (player.exp / player.nextExp) * 100);
+  document.getElementById('expFill').style.width = `${expPct}%`;
+
+  const hpPct = Math.max(0, (player.hp / player.maxHp) * 100);
+  document.getElementById('hpFill').style.width = `${hpPct}%`;
+  document.getElementById('hpTxt').innerText = `${Math.ceil(player.hp)}/${player.maxHp}`;
+
+  const ultPct = (player.ultCharge / player.maxUlt) * 100;
+  document.getElementById('ultFill').style.width = `${ultPct}%`;
+  document.getElementById('ultTxt').style.color = ultPct >= 100 ? '#FF1744' : '#888';
+}
+
+/* ==================== 16. 道場強化與結算介面 ==================== */
+function openDojo() {
+  const grid = document.getElementById('dojoGrid');
+  grid.innerHTML = '';
+  for (let k in TALENT_DEFS) {
+    const t = TALENT_DEFS[k];
+    const lvl = userSave.talents[k];
+    const cost = Math.floor(t.baseCost * Math.pow(t.costMult, lvl));
+    const isMax = lvl >= t.max;
+    const canBuy = userSave.gold >= cost && !isMax;
+
+    const item = document.createElement('div');
+    item.className = 'up-item';
+    item.innerHTML = `
+      <div class="up-info">
+        <h4>${t.name} (階位: ${lvl}/${t.max})</h4>
+        <p>${t.desc}</p>
+      </div>
+      <button class="up-btn ${canBuy ? '' : 'disabled'}">
+        ${isMax ? '已達極意' : `${cost} 🪙`}
+      </button>
+    `;
+    const btn = item.querySelector('.up-btn');
+    if (canBuy) {
+      btn.onclick = () => {
+        userSave.gold -= cost;
+        userSave.talents[k]++;
+        writeSave();
+        openDojo();
+      };
+    }
+    grid.appendChild(item);
+  }
+  document.getElementById('dojo-modal').style.display = 'flex';
+}
+
+function openAchievements() {
+  const list = document.getElementById('achieveList');
+  list.innerHTML = '';
+  ACHIEVE_DEFS.forEach(a => {
+    const done = !!userSave.achievements[a.id];
+    const item = document.createElement('div');
+    item.className = 'achieve-item';
+    item.innerHTML = `
+      <div>
+        <h4>${a.name}</h4>
+        <p style="font-size:12px; color:#666;">${a.desc}</p>
+      </div>
+      <div class="achieve-status ${done ? 'ach-done' : 'ach-locked'}">
+        ${done ? '✓ 領取完成' : `獎勵 ${a.reward} 🪙`}
+      </div>
+    `;
+    list.appendChild(item);
+  });
+  document.getElementById('achieve-modal').style.display = 'flex';
+}
+
+function triggerGameOver() {
+  gameState = 'GAMEOVER';
+  // 分數折算金判獎勵
+  const bonusFromScore = Math.floor(killCount * 0.8 + gameTime * 0.3);
+  sessionGold += bonusFromScore;
+  userSave.gold += bonusFromScore;
+  userSave.stats.totalGold += bonusFromScore;
+  writeSave();
+
+  const m = Math.floor(gameTime / 60).toString().padStart(2, '0');
+  const s = Math.floor(gameTime % 60).toString().padStart(2, '0');
+  document.getElementById('overTime').innerText = `${m}:${s}`;
+  document.getElementById('overKills').innerText = killCount;
+  document.getElementById('overGold').innerText = sessionGold;
+  document.getElementById('game-over-modal').style.display = 'flex';
+}
+
+/* ==================== 17. 事件綁定與遊戲啟動 ==================== */
+document.getElementById('btnStartGame').onclick = () => {
+  audio.playSlash();
+  document.getElementById('main-menu').style.display = 'none';
+  if ('ontouchstart' in window) {
+    document.getElementById('touch-controls').style.display = 'block';
+  }
+  startNewRun();
+};
+document.getElementById('btnOpenDojo').onclick = openDojo;
+document.getElementById('btnCloseDojo').onclick = () => {
+  document.getElementById('dojo-modal').style.display = 'none';
+};
+document.getElementById('btnOpenAchieve').onclick = openAchievements;
+document.getElementById('btnCloseAchieve').onclick = () => {
+  document.getElementById('achieve-modal').style.display = 'none';
+};
+document.getElementById('btnRestart').onclick = () => {
+  document.getElementById('game-over-modal').style.display = 'none';
+  document.getElementById('main-menu').style.display = 'flex';
+};
+
+function startNewRun() {
+  gameTime = 0;
+  killCount = 0;
+  sessionGold = 0;
+  enemies = [];
+  projectiles = [];
+  enemyProjectiles = [];
+  pickups = [];
+  particles = [];
+  textPopups = [];
+  bossSpawned1 = false;
+  bossSpawned2 = false;
+
+  player.x = 0; player.y = 0;
+  player.level = 1; player.exp = 0; player.nextExp = 20;
+  player.ultCharge = 0;
+  player.initTalents();
+
+  initDestructibles();
+  gameState = 'PLAYING';
+}
+
+loadSave();
+requestAnimationFrame(gameLoop);
+</script>
+</body>
+</html>
